@@ -27,6 +27,11 @@ namespace AdeAuth.Models
         public string TokenSecret { get; set; }
 
         /// <summary>
+        /// The minutes it takes to expire
+        /// </summary>
+        public int ExpirationTime { get; set; }
+
+        /// <summary>
         /// Authentication scheme
         /// </summary>
         public string AuthenticationScheme { get; set; }

@@ -21,6 +21,8 @@ namespace AdeAuth.Db
 
         public DbSet<LoginActivity> LoginActivities { get; set; }
 
+        public DbSet<UserClaim> UserClaims { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ApplicationRole>()
@@ -34,7 +36,15 @@ namespace AdeAuth.Db
 
             modelBuilder.Entity<ApplicationUser>().HasKey(s => s.Id);
 
+            modelBuilder.Entity<ApplicationUser>().HasIndex(s => s.Email).IsUnique();
+
+            modelBuilder.Entity<ApplicationUser>().HasIndex(s=>s.UserName).IsUnique();
+
             modelBuilder.Entity<ApplicationRole>().HasKey(s => s.Id);
+
+            modelBuilder.Entity<UserClaim>().HasKey(s => s.Id);
+
+            modelBuilder.Entity<UserClaim>().HasOne<ApplicationUser>().WithMany().HasForeignKey(s => s.UserId);
 
             modelBuilder.Entity<LoginActivity>().HasKey(s=>s.Id);
 
@@ -63,6 +73,8 @@ namespace AdeAuth.Db
 
         public DbSet<LoginActivity> LoginActivities { get; set; }
 
+        public DbSet<UserClaim> UserClaims { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ApplicationRole>()
@@ -83,6 +95,10 @@ namespace AdeAuth.Db
 
             modelBuilder.Entity<LoginActivity>().HasOne<TUser>()
                 .WithMany().HasForeignKey(s => s.UserId);
+
+            modelBuilder.Entity<UserClaim>().HasKey(s => s.Id);
+
+            modelBuilder.Entity<UserClaim>().HasOne<TUser>().WithMany().HasForeignKey(s => s.UserId);
         }
     }
 
@@ -101,8 +117,8 @@ namespace AdeAuth.Db
         public  DbSet<TUser> Users { get; set; }
         public  DbSet<TRole> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
-
         public DbSet<LoginActivity> LoginActivities { get; set; }
+        public DbSet<UserClaim> UserClaims { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -124,6 +140,10 @@ namespace AdeAuth.Db
 
             modelBuilder.Entity<LoginActivity>().HasOne<TUser>()
                 .WithMany().HasForeignKey(s => s.UserId);
+
+            modelBuilder.Entity<UserClaim>().HasKey(s => s.Id);
+
+            modelBuilder.Entity<UserClaim>().HasOne<TUser>().WithMany().HasForeignKey(s => s.UserId);
         }
     }
 }

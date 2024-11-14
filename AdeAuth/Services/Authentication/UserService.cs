@@ -4,14 +4,14 @@ using AdeAuth.Services.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace AdeAuth.Services
+namespace AdeAuth.Services.Authentication
 {
     /// <summary>
     /// Manages user service
     /// </summary>
     /// <typeparam name="TDbContext">Context to manage operation</typeparam>
     /// <typeparam name="TModel">Application user</typeparam>
-    public class UserService<TDbContext,TModel> : Repository<TDbContext,TModel>, IUserService<TModel> 
+    public class UserService<TDbContext, TModel> : Repository<TDbContext, TModel>, IUserService<TModel>
         where TDbContext : DbContext
         where TModel : ApplicationUser
     {
@@ -47,7 +47,7 @@ namespace AdeAuth.Services
 
         public AccessResult CreateUser(TModel user)
         {
-             _users.Add(user);
+            _users.Add(user);
 
             var response = SaveChanges();
 
@@ -77,7 +77,7 @@ namespace AdeAuth.Services
                 }
                 Db.Entry(currentUser).CurrentValues.SetValues(user);
             }
-            
+
             var response = await SaveChangesAsync();
             if (!response)
             {
@@ -90,7 +90,7 @@ namespace AdeAuth.Services
         public AccessResult UpdateUser(TModel user)
         {
             bool isTracked = Db.Entry(user).State != EntityState.Detached;
-            if(isTracked)
+            if (isTracked)
             {
                 _users.Update(user);
             }
@@ -103,7 +103,7 @@ namespace AdeAuth.Services
                 }
                 Db.Entry(currentUser).CurrentValues.SetValues(user);
             }
-            
+
             var response = SaveChanges();
 
             if (!response)
@@ -116,7 +116,7 @@ namespace AdeAuth.Services
 
         public async Task<AccessResult> DeleteUserAsync(TModel user)
         {
-           _users.Remove(user);
+            _users.Remove(user);
             var response = await SaveChangesAsync();
             if (!response)
             {
@@ -142,7 +142,7 @@ namespace AdeAuth.Services
         {
             var response = await _users.Where(s => s.Email == email).FirstOrDefaultAsync();
 
-            if(response == null)
+            if (response == null)
             {
                 return AccessResult<TModel>.Failed(new AccessError("Invalid user", StatusCodes.Status404NotFound));
             }
@@ -176,7 +176,7 @@ namespace AdeAuth.Services
 
         public AccessResult<TModel> FetchUserById(Guid userId)
         {
-            var response =  _users.Where(s => s.Id == userId).FirstOrDefault();
+            var response = _users.Where(s => s.Id == userId).FirstOrDefault();
 
             if (response == null)
             {

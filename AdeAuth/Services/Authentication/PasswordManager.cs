@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AdeAuth.Services.Interfaces;
+﻿using AdeAuth.Services.Interfaces;
+using AdeAuth.Services.Utility;
 
-namespace AdeAuth.Services
+namespace AdeAuth.Services.Authentication
 {
     /// <summary>
     /// Manages password manager
@@ -21,7 +17,7 @@ namespace AdeAuth.Services
         public string HashPassword(string password, out string salt)
         {
             salt = BCrypt.Net.BCrypt.GenerateSalt();
-            var hash = BCrypt.Net.BCrypt.HashPassword(password,salt);
+            var hash = BCrypt.Net.BCrypt.HashPassword(password, salt);
             return hash;
         }
 
@@ -34,8 +30,10 @@ namespace AdeAuth.Services
         /// <returns></returns>
         public bool VerifyPassword(string password, string currentPassword, string salt)
         {
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password,salt);
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
             return currentPassword.Equals(hashedPassword);
         }
+
+        private readonly AccessOption accessOption;
     }
 }

@@ -8,6 +8,16 @@ namespace AdeAuth.Models
 {
     public class PasswordRule
     {
-        public 
+        public bool HasNumber { get; set; }
+
+        public bool HasCapitalLetter { get; set; }
+
+        public bool HasSmallLetter { get; set; }
+
+        public bool HasSpecialNumber { get; set; }
+
+        public int MinimumPasswordLength { get; set; } = 3;
+
+        public int MaximumPasswordLength { get; set; } = 5;
     }
 }

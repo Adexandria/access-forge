@@ -1,120 +1,77 @@
 ﻿using AdeAuth.Client.Models;
-using AdeAuth.Models;
+using AdeAuth.Services;
 using AdeAuth.Services.Interfaces;
-
 
 namespace AdeAuth.Client.Services
 {
     public class Application
     {
-        public Application(IAuthService userService,
-            IRoleService<Role> roleService, ITokenProvider tokenProvider, IPasswordManager passwordManager)
+        public Application(SignInManager<User> _signInManager, 
+            IPasswordManager _passwordManager,
+            UserManager<User> _userManager)
         {
-            _userService = userService;
-            _tokenProvider = tokenProvider;
-            _roleService = roleService;
-            _passwordManager = passwordManager;
+            signInManager = _signInManager;
+            userManager = _userManager;
+            passwordManager = _passwordManager;
         }
 
-        public async Task<string> SignUp(string email, string password, string role)
+
+        public string SignUp(string email, string password)
         {
-            var isUserExist = await _userService.IsUserExist(email);
-            if (isUserExist)
-                return "This account is already associated with this application.";
+            var user = new User(email);
 
-            var userRole = await _roleService.GetExistingRoleAsync(role);
+            var hashedPassword = passwordManager.HashPassword(password, out string salt);
 
-            var hashedPassword = _passwordManager.HashPassword(password, out var salt);
+            user.SetHashedPassword(hashedPassword, salt);
 
-            var user = new User(email).SetHashedPassword(hashedPassword, salt).SetRole(userRole.Id);
+            var result = userManager.CreateUser(user);
 
-            var isCreated = await _userService.CreateUserAsync(user);
-
-            if(!isCreated)
+            if(!result.IsSuccessful) 
             {
-                return "Failed to create account";
+                return "Failed to create user";
             }
 
-            var claims = new Dictionary<string, object>()
-            {
-                {"id", user.Id.ToString() },
-                {"email", email },
-                {"role", userRole.Name }
-            };
+            var tokenResponse = userManager.GenerateEmailConfirmationToken(user.Id);
 
-            var generatedToken = _tokenProvider.GenerateToken(claims, 30);
-
-            return generatedToken;
+            return tokenResponse.Data;
         }
 
-        public async Task<bool> AssignUserRoles(string email, string role, string token)
+
+        public string Authenticate(string email, string password)
         {
-            var claims = _tokenProvider.ReadToken(token, "id", "email","role");
+            var result = signInManager.SignInByEmail(email, password);
 
-            var userRole = claims.ContainsValue(role) ? claims[role].ToString() : null;
-
-            if(userRole != "Admin")
+            if (result.IsTwoFactorRequired)
             {
-                return false;
+                return "Proceed to two factor authenticator";
             }
 
-            var isDecoded = Guid.TryParse(claims["id"].ToString(),out Guid userId);
-
-            if (!isDecoded)
+            if (result.IsLockedOut)
             {
-                return false;                
+                return "This user has been locked out";
             }
 
-           var isUserExist = await _userService.IsUserExist(userId);
-
-           if (!isUserExist)
-           {
-                return false;
-           }
-
-           return await _roleService.AddUserRoleAsync(email, role);
-        }
-
-
-
-        public async Task<string> AuthenticateByEmail(string email, string password)
-        {
-            var authenticatedUser = await _userService.AuthenticateUsingEmailAsync(email, password);
-            if(authenticatedUser == null)
+            if (!result.IsSuccessful)
             {
-                return "Invalid email/password";
+                return "Invalid email or password";
             }
 
+            return result.Data.AccessToken;
+        }
 
-            var claims = new Dictionary<string, object>()
+        public string VerifyEmail(Guid userId, string token)
+        {
+            var response = userManager.ConfirmEmailByToken(userId, token);
+
+            if(response.IsSuccessful)
             {
-                {"id", authenticatedUser.Id.ToString() },
-                {"email", email },
-                {"role", authenticatedUser.Role.Name }
-            };
-
-            var generatedToken = _tokenProvider.GenerateToken(claims, 30);
-
-            return generatedToken;
+                return "Successful";
+            }
+            return "Failed to verify email";
         }
 
-        public async Task<bool> CreateRole(Role role)
-        {
-            var response = await _roleService.CreateRoleAsync(role);
-
-            return response;
-        }
-
-        public async Task<bool> IsExist(string role)
-        {
-            var response = await _roleService.GetExistingRoleAsync(role);
-
-            return response != null;
-        }
-
-        private readonly ITokenProvider _tokenProvider;
-        private readonly IPasswordManager _passwordManager;
-        private readonly IRoleService<Role> _roleService;
-        private readonly IAuthService _userService;
+        private readonly SignInManager<User> signInManager;
+        private readonly IPasswordManager passwordManager;
+        private readonly UserManager<User> userManager;
     }
 }

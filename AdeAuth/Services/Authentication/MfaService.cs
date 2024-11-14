@@ -2,7 +2,7 @@
 using AdeAuth.Services.Utility;
 using Google.Authenticator;
 
-namespace AdeAuth.Services
+namespace AdeAuth.Services.Authentication
 {
     /// <summary>
     /// Manages multi-factor service
@@ -62,7 +62,7 @@ namespace AdeAuth.Services
         /// <returns>A list of pins</returns>
         public string[] GenerateGoogleAuthenticatorPins(byte[] key, DateTime expiryDate)
         {
-            return _twoFactorAuthenticator.GetCurrentPINs(key,expiryDate.TimeOfDay);
+            return _twoFactorAuthenticator.GetCurrentPINs(key, expiryDate.TimeOfDay);
         }
 
         private readonly TwoFactorAuthenticator _twoFactorAuthenticator;

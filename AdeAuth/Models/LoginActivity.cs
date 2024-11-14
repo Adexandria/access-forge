@@ -11,6 +11,35 @@ namespace AdeAuth.Models
     /// </summary>
     public class LoginActivity
     {
+
+        protected LoginActivity()
+        {
+            Id = Guid.NewGuid();
+        }
+
+
+        public LoginActivity(string device, Guid userId)
+        {
+            Id = Guid.NewGuid();
+            RecentLoginTime = DateTime.UtcNow;
+            Device = device;
+            UserId = userId;
+        }
+
+        public LoginActivity UpdateLoginActivity()
+        {
+            RecentLoginTime = DateTime.UtcNow;
+            return this;
+        }
+
+        public LoginActivity AddLocation(string ipAddress, string city, string country)
+        {
+            IpAddress = ipAddress;
+            City = city;
+            Country = country;
+
+            return this;
+        }
         /// <summary>
         /// Id
         /// </summary>
@@ -20,33 +49,32 @@ namespace AdeAuth.Models
         /// Device the user is using to connect
         /// </summary>
 
-        public string Device {  get; set; }
+        public string? Device {  get; set; }
 
         /// <summary>
         /// IP address of the device
         /// </summary>
 
-        public string IpAddress { get; set; }
+        public string? IpAddress { get; set; }
 
         /// <summary>
         /// City of the user
         /// </summary>
 
-        public string City { get; set; }
+        public string? City { get; set; }
 
 
         /// <summary>
         /// Country of the user
         /// </summary>
 
-        public string Country { get; set; }
+        public string? Country { get; set; }
 
         /// <summary>
         /// Last login time
         /// </summary>
 
         public DateTime RecentLoginTime { get; set; }
-
 
         /// <summary>
         /// User id

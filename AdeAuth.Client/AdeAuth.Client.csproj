@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\AuthService.cs" />
+    <Compile Remove="Services\IAuthService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AdeAuth\AdeAuth.csproj" />
   </ItemGroup>
 

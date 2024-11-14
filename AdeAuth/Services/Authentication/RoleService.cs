@@ -2,17 +2,17 @@
 using AdeAuth.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace AdeAuth.Services
+namespace AdeAuth.Services.Authentication
 {
     /// <summary>
     /// Manages role services
     /// </summary>
     /// <typeparam name="TRole">Application role</typeparam>
-    public class RoleService<TDbContext, TModel> : Repository<TDbContext,TModel>,IRoleService<TModel>
+    public class RoleService<TDbContext, TModel> : Repository<TDbContext, TModel>, IRoleService<TModel>
         where TDbContext : DbContext
         where TModel : ApplicationRole
     {
-        public RoleService(TDbContext dbContext):base(dbContext) 
+        public RoleService(TDbContext dbContext) : base(dbContext)
         {
             _roles = dbContext.Set<TModel>();
         }
@@ -34,9 +34,9 @@ namespace AdeAuth.Services
             _roles.Add(role);
 
             return SaveChanges();
-        }      
+        }
 
-        
+
         /// <summary>
         /// Create roles
         /// </summary>
@@ -54,7 +54,7 @@ namespace AdeAuth.Services
 
         public bool CreateRoles(List<TModel> roles)
         {
-            foreach(var role in roles)
+            foreach (var role in roles)
             {
                 _roles.Add(role);
             }
@@ -76,8 +76,8 @@ namespace AdeAuth.Services
 
         public bool DeleteRole(TModel role)
         {
-           _roles.Remove(role);
-           return  SaveChanges();
+            _roles.Remove(role);
+            return SaveChanges();
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace AdeAuth.Services
         }
 
 
-        public IEnumerable<TModel> GetExistingRoles  
+        public IEnumerable<TModel> GetExistingRoles
         {
             get
             {

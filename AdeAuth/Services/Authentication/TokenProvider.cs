@@ -6,13 +6,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AdeAuth.Services
+namespace AdeAuth.Services.Authentication
 {
     /// <summary>
     /// Manages token service
     /// </summary>
     class TokenProvider : ITokenProvider
-     {
+    {
 
         /// <summary>
         /// A constructor
@@ -20,7 +20,7 @@ namespace AdeAuth.Services
         /// <param name="tokenConfiguration">Details of token</param>
         public TokenProvider(TokenConfiguration tokenConfiguration)
         {
-           _tokenConfiguration = tokenConfiguration ?? throw new NullReferenceException(nameof(tokenConfiguration));
+            _tokenConfiguration = tokenConfiguration ?? throw new NullReferenceException(nameof(tokenConfiguration));
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace AdeAuth.Services
             {
                 _ = jwtSecurityTokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
 
-                if(validatedToken != null)
+                if (validatedToken != null)
                 {
                     return true;
                 }
@@ -103,7 +103,7 @@ namespace AdeAuth.Services
             TokenValidationParameters tokenValidationParameters = GetTokenValidationParameters();
 
             JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
-            Dictionary<string,object> claimValues = new();
+            Dictionary<string, object> claimValues = new();
 
             try
             {
@@ -111,13 +111,13 @@ namespace AdeAuth.Services
 
                 foreach (var claimType in claimTypes)
                 {
-                    var claimValue = claims.Claims.Where(s=>s.Type == claimType)
-                        .Select(s=>s.Value).FirstOrDefault();
+                    var claimValue = claims.Claims.Where(s => s.Type == claimType)
+                        .Select(s => s.Value).FirstOrDefault();
 
-                    if(claimValue == null)
+                    if (claimValue == null)
                         continue;
 
-                    claimValues.Add(claimType,claimValue);
+                    claimValues.Add(claimType, claimValue);
                 }
 
                 return claimValues;
@@ -147,7 +147,7 @@ namespace AdeAuth.Services
         /// <returns>A list of decoded token </returns>
         public string[] ReadTokenUsingDelimiter(string token, string delimiter)
         {
-            if(string.IsNullOrEmpty(token) || string.IsNullOrWhiteSpace(delimiter))
+            if (string.IsNullOrEmpty(token) || string.IsNullOrWhiteSpace(delimiter))
             {
                 throw new NullReferenceException("Token can not be empty");
             }
@@ -160,7 +160,7 @@ namespace AdeAuth.Services
                 return new string[] { details };
             }
 
-            return details.Split(delimiter); 
+            return details.Split(delimiter);
         }
 
         /// <summary>

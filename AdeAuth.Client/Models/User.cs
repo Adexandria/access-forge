@@ -22,13 +22,8 @@ namespace AdeAuth.Client.Models
             return this;
         }
 
-        public User SetRole(Guid roleId)
-        {
-            RoleId = roleId;
-            return this;
-        }
         public string? Address { get; set; }
-        public Guid RoleId { get; set; }
-        public Role Role { get; set; }
+       /* public Guid RoleId { get; set; }
+        public Role Role { get; set; }*/
     }
 }

@@ -2,6 +2,7 @@
 using AdeAuth.Client.Models;
 using AdeAuth.Client.Services;
 using AdeAuth.Infrastructure;
+using AdeAuth.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
@@ -18,21 +19,38 @@ namespace AdeAuth.Client
 
             var connectionString = "Server=localhost\\SQLEXPRESS;Database=AccessForge;Trusted_Connection=True;TrustServerCertificate=true;";
 
-            services.AddIdentityService<IdentityDbContext,User,Role>(options =>
+            services.AddIdentityService<IdentityDbContext, User, Role>(options =>
             {
                 options.RegisterServicesFromAssembly(typeof(Program).Assembly);
                 options.UseSqlServer(connectionString);
             })
-            .AddGoogleTwoFactorAuthenticator(s=>
+            .AddGoogleAuthenticator(s =>
             {
-                    s.Issuer = "AdeNote";
-                    s.AutheticatorKey = Encoding.ASCII.GetBytes(tokenSecret);
+                s.Issuer = "AdeNote";
+                s.AutheticatorKey = Encoding.ASCII.GetBytes(tokenSecret);
             })
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+            .AddJwtBearer(s =>
             {
-                options.TokenSecret = tokenSecret;
+                s.TokenSecret = tokenSecret;
+                s.AuthenticationScheme = JwtBearerDefaults.AuthenticationScheme;
+                s.ExpirationTime = 30;
+            })
+            .AddIPInfoConfiguration("a9e6713beb5988")
+            .AddIdentityRule(s =>
+            {
+                s.IsRequireEmailConfirmation = true;
+                s.Password = new PasswordRule
+                {
+                    MaximumPasswordLength = 10,
+                    MinimumPasswordLength = 3,
+                    HasCapitalLetter = true,
+                    HasNumber = true,
+                    HasSmallLetter = true,
+                    HasSpecialNumber = true,
+                };
             });
+
+
 
             services.AddScoped<Application>();
 
@@ -42,42 +60,13 @@ namespace AdeAuth.Client
 
             Application = scopedProvider.GetRequiredService<Application>();
 
-            _ = CreateRole("User").Result;
-            _ = CreateRole("Admin",SubRole.Super).Result;
+           /* var response = Application.SignUp("adeolaaderibigbe09@gmail.com", "Adeol");*/
 
-            // var response = SignUp("adeolaaderibigbe09@gmail.com", "Adeolaisthebest", "User").Result;
+            var token = Application.Authenticate("adeolaaderibigbe09@gmail.com", "Adeol");
 
-            var response = Application.AuthenticateByEmail("adeolaaderibigbe09@gmail.com", "Adeolaisthebest").Result;
-
-            Console.WriteLine(response);
+            Console.WriteLine(token);
         }
 
-        public static async Task<bool> CreateRole(string name, SubRole subRole = SubRole.None)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            { 
-                throw new ArgumentNullException("name");
-            }
-
-            var isExist = await Application.IsExist(name);
-            if(isExist)
-            {
-                return false;
-            }
-
-            var role = new Role(name, subRole);
-            return await Application.CreateRole(role);
-        }
-
-        public static async Task<string> SignUp(string email, string password, string role)
-        {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(role))
-            {
-                return "Invalid name or password or role";
-            }
-
-            return await Application.SignUp(email, password, role);
-        }
 
         private static Application Application;
 

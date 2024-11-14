@@ -4,9 +4,9 @@ using AdeAuth.Services.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace AdeAuth.Services
+namespace AdeAuth.Services.Authentication
 {
-    internal class UserRoleService<TDbContext, TUser, TRole> : Repository<TDbContext,UserRole>, IUserRoleService<TUser>
+    internal class UserRoleService<TDbContext, TUser, TRole> : Repository<TDbContext, UserRole>, IUserRoleService<TUser>
         where TUser : ApplicationUser
         where TDbContext : DbContext
         where TRole : ApplicationRole
@@ -42,13 +42,13 @@ namespace AdeAuth.Services
 
         public AccessResult AddUserRole(string email, string role)
         {
-            var currentRole =  GetExistingRole(role);
+            var currentRole = GetExistingRole(role);
             if (currentRole == null)
             {
                 return AccessResult.Failed(new AccessError("Invalid role", StatusCodes.Status404NotFound));
             }
 
-            var currentUser =  _users.Where(s => s.Email == email).FirstOrDefault();
+            var currentUser = _users.Where(s => s.Email == email).FirstOrDefault();
 
             if (currentUser == null)
                 return AccessResult.Failed(new AccessError("User does not exist", StatusCodes.Status404NotFound));

@@ -16,11 +16,11 @@ namespace AdeAuth.Client.Db
 
             modelBuilder.Entity<User>().ToTable("Users");
 
-            modelBuilder.Entity<User>().HasOne(u => u.Role)
+           /* modelBuilder.Entity<User>().HasOne(u => u.Role)
                 .WithMany(s => s.Users).HasForeignKey(s=>s.RoleId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Role>().ToTable("Roles");
+            modelBuilder.Entity<Role>().ToTable("Roles");*/
         }
     }
 }

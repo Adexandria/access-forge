@@ -1,16 +1,19 @@
 ﻿using AdeAuth.Db;
 using AdeAuth.Models;
 using AdeAuth.Services;
+using AdeAuth.Services.Authentication;
 using AdeAuth.Services.Extensions;
 using AdeAuth.Services.Interfaces;
 using AdeAuth.Services.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 
@@ -36,7 +39,7 @@ namespace AdeAuth.Infrastructure
 
             serviceCollection.RegisterDependencies(authConfiguration.dependencyTypes);
 
-            RegisterDependencies<TDbContext>(serviceCollection);
+            RegisterDependencies<TDbContext, ApplicationUser, ApplicationRole>(serviceCollection);
 
             return serviceCollection;
         }
@@ -50,8 +53,8 @@ namespace AdeAuth.Infrastructure
         /// <typeparam name="TDbContext">Identity context</typeparam>
         /// <param name="serviceCollection">Manages dependencies of services</param>
         /// <param name="configurationBuilder">Build identity service configuration</param>
-        public static IServiceCollection AddIdentityService<TDbContext,TUser>(this IServiceCollection serviceCollection, 
-            Action<AuthConfiguration> configurationBuilder) 
+        public static IServiceCollection AddIdentityService<TDbContext, TUser>(this IServiceCollection serviceCollection,
+            Action<AuthConfiguration> configurationBuilder)
             where TDbContext : IdentityContext<TUser>
             where TUser : ApplicationUser
         {
@@ -63,8 +66,8 @@ namespace AdeAuth.Infrastructure
 
             serviceCollection.RegisterDependencies(authConfiguration.dependencyTypes);
 
-            RegisterDependencies<TDbContext,TUser>(serviceCollection);
-            
+            RegisterDependencies<TDbContext, TUser, ApplicationRole>(serviceCollection);
+
 
             return serviceCollection;
         }
@@ -79,9 +82,9 @@ namespace AdeAuth.Infrastructure
         /// <param name="configurationBuilder">Build identity service configuration</param>
         public static IServiceCollection AddIdentityService<TDbContext, TUser, TRole>(this IServiceCollection serviceCollection,
             Action<AuthConfiguration> configurationBuilder)
-         where TDbContext : IdentityContext<TUser,TRole>
+         where TDbContext : IdentityContext<TUser, TRole>
          where TUser : ApplicationUser
-         where TRole: ApplicationRole
+         where TRole : ApplicationRole
         {
             var authConfiguration = new AuthConfiguration(serviceCollection);
 
@@ -92,7 +95,18 @@ namespace AdeAuth.Infrastructure
             serviceCollection.RegisterDependencies(authConfiguration.dependencyTypes);
 
             RegisterDependencies<TDbContext, TUser, TRole>(serviceCollection);
-            
+
+            return serviceCollection;
+        }
+
+        public static IServiceCollection AddIdentityRule(this IServiceCollection serviceCollection,Action<AccessRule> action)
+        {
+            var rule = new AccessRule();
+
+            action(rule);
+
+            serviceCollection.AddSingleton(rule);
+
             return serviceCollection;
         }
 
@@ -102,7 +116,7 @@ namespace AdeAuth.Infrastructure
         /// <param name="serviceCollection">Manages dependencies of services</param>
         /// <param name="actionBuilder">Manages two factor authentication configuration</param>
         /// <returns>Manages dependencies of services</returns>
-        public static IServiceCollection AddGoogleTwoFactorAuthenticator
+        public static IServiceCollection AddGoogleAuthenticator
             (this IServiceCollection serviceCollection, Action<TwoAuthenticationConfiguration> actionBuilder)
         {
             var twoAuthenticationConfiguration = new TwoAuthenticationConfiguration();
@@ -114,23 +128,24 @@ namespace AdeAuth.Infrastructure
             return serviceCollection;
         }
 
-/// <summary>
-/// Sets up jwt bearer authentication scheme
-/// </summary>
-/// <param name="authenticationBuilder">Configuration authentication</param>
-/// <param name="actionBuilder">Build token configuration</param>
-/// <returns>Configuration authentication</returns>
-public static IServiceCollection AddJwtBearer(this IServiceCollection serviceCollection, Action<TokenConfiguration> actionBuilder)
+        /// <summary>
+        /// Sets up jwt bearer authentication scheme
+        /// </summary>
+        /// <param name="authenticationBuilder">Configuration authentication</param>
+        /// <param name="actionBuilder">Build token configuration</param>
+        /// <returns>Configuration authentication</returns>
+        public static IServiceCollection AddJwtBearer(this IServiceCollection serviceCollection, Action<TokenConfiguration> actionBuilder)
         {
             var tokenConfiguration = new TokenConfiguration();
 
             actionBuilder(tokenConfiguration);
 
-            serviceCollection.AddAuthentication()
+            serviceCollection.AddAuthentication(tokenConfiguration.AuthenticationScheme)
                 .AddJwtBearer(tokenConfiguration.AuthenticationScheme ?? JwtBearerDefaults.AuthenticationScheme, option =>
                 {
                     option.SaveToken = true;
-                    option.TokenValidationParameters = new TokenValidationParameters() {
+                    option.TokenValidationParameters = new TokenValidationParameters()
+                    {
 
                         ValidAudience = tokenConfiguration.Audience ?? null,
                         ValidIssuer = tokenConfiguration.Issuer ?? null,
@@ -142,7 +157,7 @@ public static IServiceCollection AddJwtBearer(this IServiceCollection serviceCol
                     };
                 });
 
-           serviceCollection.AddSingleton(tokenConfiguration);
+            serviceCollection.AddSingleton(tokenConfiguration);
 
             return serviceCollection;
         }
@@ -153,30 +168,38 @@ public static IServiceCollection AddJwtBearer(this IServiceCollection serviceCol
         /// <param name="authenticationBuilder">Configuration authentication</param>
         /// <param name="actionBuilder">Builds microsoft single sign on</param>
         /// <returns>Configuration authentication</returns>
-        public static IServiceCollection AddMicrosoftAccount(this IServiceCollection serviceCollection, Action<AzureConfiguration> actionBuilder)
+        public static IServiceCollection AddMicrosoftAccount(this AuthenticationBuilder authenticationBuilder, Action<AzureConfiguration> actionBuilder)
         {
-           var azureConfiguration = new AzureConfiguration();
+            var azureConfiguration = new AzureConfiguration();
 
-           actionBuilder(azureConfiguration);
+            actionBuilder(azureConfiguration);
 
-            serviceCollection.AddAuthentication()
-                  .AddJwtBearer(azureConfiguration.AuthenticationScheme ?? JwtBearerDefaults.AuthenticationScheme, options =>
-                 {
-                     options.SaveToken = true;
-                     options.MetadataAddress = $"{azureConfiguration.Instance}{azureConfiguration.Type}/v2.0/.well-known/openid-configuration";
-                     options.TokenValidationParameters = new TokenValidationParameters()
-                     {
-                         NameClaimType = azureConfiguration.NameClaimType ?? ClaimsIdentity.DefaultNameClaimType,
-                         ValidAudience = azureConfiguration.Audience,
-                         ValidIssuer = $"{azureConfiguration.Instance}{azureConfiguration.TenantId}/v2.0",
-                         ValidateIssuer = true,
-                         ValidateAudience = true,
-                         ValidateIssuerSigningKey = true,
-                         ValidateLifetime = true
-                     };
-                 });
+            authenticationBuilder.AddJwtBearer(azureConfiguration.AuthenticationScheme ?? JwtBearerDefaults.AuthenticationScheme, options =>
+                  {
+                      options.SaveToken = true;
+                      options.MetadataAddress = $"{azureConfiguration.Instance}{azureConfiguration.Type}/v2.0/.well-known/openid-configuration";
+                      options.TokenValidationParameters = new TokenValidationParameters()
+                      {
+                          NameClaimType = azureConfiguration.NameClaimType ?? ClaimsIdentity.DefaultNameClaimType,
+                          ValidAudience = azureConfiguration.Audience,
+                          ValidIssuer = $"{azureConfiguration.Instance}{azureConfiguration.TenantId}/v2.0",
+                          ValidateIssuer = true,
+                          ValidateAudience = true,
+                          ValidateIssuerSigningKey = true,
+                          ValidateLifetime = true
+                      };
+                  });
 
-            return serviceCollection;
+            return authenticationBuilder.Services;
+        }
+
+        public static IServiceCollection AddIPInfoConfiguration(this IServiceCollection servicesCollection,string apiKey)
+        {
+            var ipConfiguration = new IpInfoConfiguration(apiKey);
+
+            servicesCollection.AddSingleton(ipConfiguration);
+
+            return servicesCollection;
         }
 
         /// <summary>
@@ -213,7 +236,7 @@ public static IServiceCollection AddJwtBearer(this IServiceCollection serviceCol
         /// <param name="services">Manages dependencies of services</param>
         /// <param name="connectionString">Connection string of sql server</param>
         private static void RegisterDbContext<TDbContext>(IServiceCollection services, string connectionString)
-            where TDbContext: DbContext
+            where TDbContext : DbContext
         {
             services.AddDbContext<TDbContext>((s) => s.UseSqlServer(connectionString));
 
@@ -228,7 +251,7 @@ public static IServiceCollection AddJwtBearer(this IServiceCollection serviceCol
         /// <typeparam name="TDbContext">Identity context</typeparam>
         /// <param name="services">Manages dependencies of services</param>
         /// <param name="action">Registers db context dependencies</param>
-        private static void RunMigration<TDbContext>(this IServiceCollection services) 
+        private static void RunMigration<TDbContext>(this IServiceCollection services)
             where TDbContext : DbContext
         {
             var provider = services.BuildServiceProvider();
@@ -246,53 +269,36 @@ public static IServiceCollection AddJwtBearer(this IServiceCollection serviceCol
                 CheckTableExistsAndCreateIfMissing(dbContext, "Users");
                 CheckTableExistsAndCreateIfMissing(dbContext, "Roles");
                 CheckTableExistsAndCreateIfMissing(dbContext, "UserRoles");
+                CheckTableExistsAndCreateIfMissing(dbContext, "LoginActivities");
+                CheckTableExistsAndCreateIfMissing(dbContext, "UserClaims");
             }
         }
 
+
+        //revist
         /// <summary>
         /// Register dependencies
         /// </summary>
         /// <typeparam name="TDbContext">Identity context</typeparam>
-        /// <param name="services">Manages dependencies of services</param>
-        private static void RegisterDependencies<TDbContext>(IServiceCollection services)
-           where TDbContext : IdentityContext
-        {
-            services.AddScoped<IRoleService<ApplicationRole>, RoleService<TDbContext, ApplicationRole>>();
-
-            services.AddScoped<IUserService<ApplicationUser>, UserService<TDbContext, ApplicationUser>>();
-        }
-
-        /// <summary>
-        /// Register dependencies
-        /// </summary>
-        /// <typeparam name="TUser">User model</typeparam>
-        /// <typeparam name="TDbContext">Identity context</typeparam>
-        /// <param name="services">Manages dependencies of services</param>
-        private static void RegisterDependencies<TDbContext,TUser>(IServiceCollection services)
-            where TDbContext : IdentityContext<TUser>
-            where TUser : ApplicationUser
-        {
-            services.AddScoped<IRoleService<ApplicationRole>, RoleService<TDbContext,ApplicationRole>>();
-
-            services.AddScoped<IUserService<TUser>, UserService<TDbContext, TUser>>();
-        }
-
-        /// <summary>
-        /// Register dependencies
-        /// </summary>
-        /// <typeparam name="TDbContext">Identity context</typeparam>
-        /// <typeparam name="TUser">User model</typeparam>
-        /// <typeparam name="TRole">Role model</typeparam>
         /// <param name="services">Manages dependencies of services</param>
         private static void RegisterDependencies<TDbContext, TUser, TRole>(IServiceCollection services)
-          where TDbContext : IdentityContext<TUser, TRole>
-          where TRole : ApplicationRole
-           where TUser : ApplicationUser
+           where TDbContext : DbContext
+            where TUser : ApplicationUser
+            where TRole : ApplicationRole
         {
-
-            services.AddScoped<IRoleService<TRole>, RoleService<TDbContext,TRole>>();
+            services.AddScoped<IRoleService<TRole>, RoleService<TDbContext, TRole>>();
 
             services.AddScoped<IUserService<TUser>, UserService<TDbContext, TUser>>();
+
+            services.AddScoped<IUserRoleService<TUser>, UserRoleService<TDbContext, TUser, TRole>>();
+
+            services.AddScoped<Services.SignInManager<TUser>>();
+
+            services.AddScoped<Services.UserManager<TUser>>();
+
+            services.AddScoped<IUserClaimService, UserClaimService<TDbContext>>();
+
+            services.AddScoped<ILoginActivityService, LoginActivityService<TDbContext>>();
         }
 
         /// <summary>
@@ -303,9 +309,15 @@ public static IServiceCollection AddJwtBearer(this IServiceCollection serviceCol
         {
             services.AddSingleton<IPasswordManager, PasswordManager>();
 
-            services.AddSingleton<ITokenProvider,TokenProvider>();
+            services.AddSingleton<ITokenProvider, TokenProvider>();
 
-            services.AddSingleton<IMfaService, MfaService>();   
+            services.AddSingleton<IMfaService, MfaService>();
+
+            services.AddScoped<ILocatorService,LocatorService>();
+
+            services.AddSingleton<AccessOption>();
+
+            services.AddHttpContextAccessor();
         }
 
         /// <summary>
