@@ -24,6 +24,7 @@ namespace AdeAuth.Services.Authentication
             _users = dbContext.Set<TModel>();
         }
 
+        /// create a method to fetch user with no tracking
 
         /// <summary>
         /// Create user
