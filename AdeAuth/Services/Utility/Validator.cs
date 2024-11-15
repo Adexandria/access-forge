@@ -28,7 +28,6 @@ namespace AdeAuth.Services.Utility
 
             return this;
         }
-
         public Validator IsValidPassword(string password)
         {
             if(password.IsEmpty())

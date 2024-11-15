@@ -24,11 +24,16 @@ namespace AdeAuth.Services.Utility
         }
 
 
-        public List<string> ValidateEmailRequirement<TUser>(TUser user)
+        public void ValidateEmailRequirement<TUser>(TUser user)
             where TUser: ApplicationUser
         {
-           return _validate.ValidateEmailConfirmation(user.EmailConfirmed)
+           var errors = _validate.ValidateEmailConfirmation(user.EmailConfirmed)
                 .Validate();
+
+           if(errors.Any())
+           {
+                throw new ValidationException(string.Join("\n", errors));
+           }
         }
 
         private readonly ValidateRule _validate;
