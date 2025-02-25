@@ -8,6 +8,12 @@ namespace AdeAuth.Services.Authentication
     /// </summary>
     class PasswordManager : IPasswordManager
     {
+
+        public PasswordManager(AccessOption _accessOption) 
+        { 
+            accessOption = _accessOption;
+        }
+
         /// <summary>
         /// Hashes password
         /// </summary>
@@ -16,6 +22,10 @@ namespace AdeAuth.Services.Authentication
         /// <returns></returns>
         public string HashPassword(string password, out string salt)
         {
+            new Validator(accessOption)
+                .IsValidPassword(password)
+                .Validate();
+
             salt = BCrypt.Net.BCrypt.GenerateSalt();
             var hash = BCrypt.Net.BCrypt.HashPassword(password, salt);
             return hash;

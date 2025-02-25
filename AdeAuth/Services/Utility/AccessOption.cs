@@ -1,5 +1,5 @@
 ﻿using AdeAuth.Models;
-using AdeAuth.Services.Exceptions;
+using System.ComponentModel.DataAnnotations;
 
 namespace AdeAuth.Services.Utility
 {

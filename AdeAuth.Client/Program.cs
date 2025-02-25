@@ -60,11 +60,13 @@ namespace AdeAuth.Client
 
             Application = scopedProvider.GetRequiredService<Application>();
 
-           /* var response = Application.SignUp("adeolaaderibigbe09@gmail.com", "Adeol");*/
+            //   var response = Application.SignUp("adeolaaderibigbe09@gmail.com", "Kiki6*");
 
-            var token = Application.Authenticate("adeolaaderibigbe09@gmail.com", "Adeol");
+            //var response = Application.VerifyEmail("adeolaaderibigbe09@gmail.com", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkZW9sYWFkZXJpYmlnYmUwOUBnbWFpbC5jb20iLCJuYW1laWQiOiIyYWZjYjliZS00ODdkLTRlNTQtOTE3NS01N2QwMmVkNDFmN2EiLCJuYmYiOjE3NDA0ODAzMzEsImV4cCI6MTc0MDQ4MjEzMSwiaWF0IjoxNzQwNDgwMzMxfQ.ny1YyVmnwGG0iW2lokO6xuODniqyb6r2JU0p0N-zNa8");
 
-            Console.WriteLine(token);
+            var response = Application.Authenticate("adeolaaderibigbe09@gmail.com", "Kiki6*");
+
+            Console.WriteLine(response);
         }
 
 

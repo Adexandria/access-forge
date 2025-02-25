@@ -59,9 +59,9 @@ namespace AdeAuth.Client.Services
             return result.Data.AccessToken;
         }
 
-        public string VerifyEmail(Guid userId, string token)
+        public string VerifyEmail(string email, string token)
         {
-            var response = userManager.ConfirmEmailByToken(userId, token);
+            var response = userManager.ConfirmEmailByToken(email, token);
 
             if(response.IsSuccessful)
             {

@@ -16,7 +16,7 @@ namespace AdeAuth.Services.Utility
             if (accessRule.Password.HasSpecialNumber)
             {
                 ValidatePassword(password, "[0-9]",
-                 "Password must have at least one number");
+                 "Password must have at least one special number");
             }
             return this;
         }
@@ -87,7 +87,7 @@ namespace AdeAuth.Services.Utility
         {
             var isMatch = Regex.IsMatch(password, pattern);
 
-            if (isMatch)
+            if (!isMatch)
             {
                 errors.Add(errorMessage);
             }

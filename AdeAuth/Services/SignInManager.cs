@@ -35,7 +35,7 @@ namespace AdeAuth.Services
         {
             new Validator(_accessOption)
            .IsValidText(email, "Invalid email")
-           .IsValidPassword(password)
+            .IsValidText(password, "Invalid password")
            .Validate();
 
             var response = await _userService.FetchUserByEmailAsync(email);
@@ -85,7 +85,7 @@ namespace AdeAuth.Services
         {
             new Validator(_accessOption)
            .IsValidText(email, "Invalid email")
-           .IsValidPassword(password)
+           .IsValidText(password,"Invalid password")
            .Validate();
 
             var response =  _userService.FetchUserByEmail(email);
@@ -136,7 +136,7 @@ namespace AdeAuth.Services
         {
             new Validator(_accessOption)
            .IsValidText(username, "Invalid username")
-           .IsValidPassword(password)
+            .IsValidText(password, "Invalid password")
            .Validate();
 
             var response = await _userService.FetchUserByUsernameAsync(username);
@@ -186,7 +186,7 @@ namespace AdeAuth.Services
         {
             new Validator(_accessOption)
            .IsValidText(username, "Invalid email")
-           .IsValidPassword(password)
+            .IsValidText(password, "Invalid password")
            .Validate();
 
             var response = _userService.FetchUserByUsername(username);

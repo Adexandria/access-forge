@@ -39,6 +39,7 @@ namespace AdeAuth.Services.Utility
             return this;
         }
 
+
         public Validator IsValidEmail(string email, string errorMessage)
         {
             if(string.IsNullOrEmpty(email))

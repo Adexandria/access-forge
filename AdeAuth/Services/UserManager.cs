@@ -1118,6 +1118,68 @@ namespace AdeAuth.Services
             return await _userService.UpdateUserAsync(result.Data);
         }
 
+
+        public AccessResult ConfirmEmailByToken(string email, string token)
+        {
+            new Validator()
+            .IsValidText(email, "Invalid email")
+            .IsValidText(token, "Invalid token")
+            .Validate();
+
+            var claims = _tokenProvider.ReadToken(token, ClaimTypes.NameIdentifier);
+
+            if (!claims.TryGetValue(ClaimTypes.Email, out object userEmail))
+            {
+                return AccessResult.Failed(new AccessError("Failed to confirm phone number", StatusCodes.Status400BadRequest));
+            }
+
+            if (userEmail.ToString() != email)
+            {
+                return AccessResult.Failed(new AccessError("Failed to confirm phone number", StatusCodes.Status400BadRequest));
+            }
+
+            var result = _userService.FetchUserByEmail(email);
+
+            if (!result.IsSuccessful)
+            {
+                return AccessResult.Failed(new AccessError("Invalid user", StatusCodes.Status404NotFound));
+            }
+
+            result.Data.EmailConfirmed = true;
+
+            return _userService.UpdateUser(result.Data);
+        }
+
+        public async Task<AccessResult> ConfirmEmailByTokenAsync(string email, string token)
+        {
+            new Validator()
+                  .IsValidText(email, "Invalid email")
+                .IsValidText(token, "Invalid token")
+            .Validate();
+
+            var claims = _tokenProvider.ReadToken(token, ClaimTypes.NameIdentifier);
+
+            if (!claims.TryGetValue(ClaimTypes.Email, out object userEmail))
+            {
+                return AccessResult.Failed(new AccessError("Failed to confirm phone number", StatusCodes.Status400BadRequest));
+            }
+
+            if (userEmail.ToString() != email)
+            {
+                return AccessResult.Failed(new AccessError("Failed to confirm phone number", StatusCodes.Status400BadRequest));
+            }
+
+            var result = await _userService.FetchUserByEmailAsync(email);
+
+            if (!result.IsSuccessful)
+            {
+                return AccessResult.Failed(new AccessError("Invalid user", StatusCodes.Status404NotFound));
+            }
+
+            result.Data.EmailConfirmed = true;
+
+            return await _userService.UpdateUserAsync(result.Data);
+        }
         #endregion
 
         #region Set Google Authenticator
@@ -1422,7 +1484,7 @@ namespace AdeAuth.Services
         {
             new Validator(_accessOption)
                 .IsValidPassword(password)
-             .IsValidText(token, "Invalid password")
+             .IsValidText(token, "Invalid token")
                 .Validate();
             var claims = _tokenProvider.ReadToken(token, ClaimTypes.Email);
 
