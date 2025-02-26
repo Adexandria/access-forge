@@ -26,7 +26,7 @@ namespace AdeAuth.Tests
 
             var response = await roleService.CreateRoleAsync(role);
 
-            Assert.True(response);
+            Assert.True(response.IsSuccessful);
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace AdeAuth.Tests
 
             var response = roleService.CreateRole(role);
 
-            Assert.True(response);
+            Assert.True(response.IsSuccessful);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace AdeAuth.Tests
 
             var response = roleService.CreateRoles(roles);
 
-            Assert.True(response);
+            Assert.True(response.IsSuccessful);
         }
 
 
@@ -75,7 +75,7 @@ namespace AdeAuth.Tests
 
             var response = await roleService.CreateRolesAsync(roles);
 
-            Assert.True(response);
+            Assert.True(response.IsSuccessful);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace AdeAuth.Tests
 
             var response = roleService.DeleteRole(role);
 
-            Assert.True(response);
+            Assert.True(response.IsSuccessful);
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace AdeAuth.Tests
 
             var response = await roleService.DeleteRoleAsync(role);
 
-            Assert.True(response);
+            Assert.True(response.IsSuccessful);
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace AdeAuth.Tests
         {
             var response = await roleService.DeleteRoleAsync(new ApplicationRole());
 
-            Assert.False(response);
+            Assert.False(response.IsSuccessful);
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace AdeAuth.Tests
             });
 
 
-            Assert.False(response);
+            Assert.False(response.IsSuccessful);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace AdeAuth.Tests
 
             var response = roleService.DeleteRoleRange(new[] { role });
 
-            Assert.True(response);
+            Assert.True(response.IsSuccessful);
         }
 
         [Test]
@@ -159,7 +159,7 @@ namespace AdeAuth.Tests
 
             var response = await roleService.DeleteRoleRangeAsync(new[] { role });
 
-            Assert.True(response);
+            Assert.True(response.IsSuccessful);
         }
 
         [TearDown]

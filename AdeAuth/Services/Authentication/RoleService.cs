@@ -1,5 +1,7 @@
 ﻿using AdeAuth.Models;
 using AdeAuth.Services.Interfaces;
+using AdeAuth.Services.Utility;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdeAuth.Services.Authentication
@@ -22,11 +24,19 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="role">New role to add</param>
         /// <returns>boolean value</returns>
-        public async Task<bool> CreateRoleAsync(TModel role)
+        public async Task<AccessResult> CreateRoleAsync(TModel role)
         {
             await _roles.AddAsync(role);
 
-            return await SaveChangesAsync();
+            var response =  await SaveChangesAsync();
+
+            if (response)
+            {
+                return AccessResult.Success();
+            }
+
+            return AccessResult.Failed(new AccessError("Failed to create role",
+                StatusCodes.Status400BadRequest));
         }
 
         /// <summary>
@@ -34,11 +44,19 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="role">New role to add</param>
         /// <returns>boolean value</returns>
-        public bool CreateRole(TModel role)
+        public AccessResult CreateRole(TModel role)
         {
             _roles.Add(role);
 
-            return SaveChanges();
+            var response =  SaveChanges();
+
+            if (response)
+            {
+                return AccessResult.Success();
+            }
+
+            return AccessResult.Failed(new AccessError("Failed to create role",
+               StatusCodes.Status400BadRequest));
         }
 
 
@@ -47,14 +65,22 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="roles">New roles to add</param>
         /// <returns>boolean value</returns>
-        public async Task<bool> CreateRolesAsync(List<TModel> roles)
+        public async Task<AccessResult> CreateRolesAsync(List<TModel> roles)
         {
             foreach (var role in roles)
             {
                 await _roles.AddAsync(role);
             }
 
-            return await SaveChangesAsync();
+            var response = await SaveChangesAsync();
+
+            if (response)
+            {
+                return AccessResult.Success();
+            }
+
+            return AccessResult.Failed(new AccessError("Failed to create roles",
+                StatusCodes.Status400BadRequest));
         }
 
         /// <summary>
@@ -62,14 +88,22 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="roles">New roles to add</param>
         /// <returns>boolean value</returns>
-        public bool CreateRoles(List<TModel> roles)
+        public AccessResult CreateRoles(List<TModel> roles)
         {
             foreach (var role in roles)
             {
                 _roles.Add(role);
             }
 
-            return SaveChanges();
+            var response = SaveChanges();
+
+            if (response)
+            {
+                return AccessResult.Success();
+            }
+
+            return AccessResult.Failed(new AccessError("Failed to create roles",
+                StatusCodes.Status400BadRequest));
         }
 
 
@@ -78,10 +112,19 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="role">Role to delete</param>
         /// <returns>Boolean value</returns>
-        public async Task<bool> DeleteRoleAsync(TModel role)
+        public async Task<AccessResult> DeleteRoleAsync(TModel role)
         {
             _roles.Remove(role);
-            return await SaveChangesAsync();
+
+            var response = await SaveChangesAsync();
+
+            if (response)
+            {
+                return AccessResult.Success();
+            }
+
+            return AccessResult.Failed(new AccessError("Failed to delete role",
+                StatusCodes.Status400BadRequest));
         }
 
         /// <summary>
@@ -89,10 +132,20 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="role">Role to delete</param>
         /// <returns>Boolean value</returns>
-        public bool DeleteRole(TModel role)
+        public AccessResult DeleteRole(TModel role)
         {
             _roles.Remove(role);
-            return SaveChanges();
+
+            var response = SaveChanges();
+
+            if (response)
+            {
+                return AccessResult.Success();
+            }
+
+            return AccessResult
+                .Failed(new AccessError("Failed to delete role", 
+                StatusCodes.Status400BadRequest));
         }
 
         /// <summary>
@@ -100,13 +153,21 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="roles">Roles to delete</param>
         /// <returns>Boolean value</returns>
-        public async Task<bool> DeleteRoleRangeAsync(IEnumerable<TModel> roles)
+        public async Task<AccessResult> DeleteRoleRangeAsync(IEnumerable<TModel> roles)
         {
             foreach (var role in roles)
             {
                 _roles.Remove(role);
             }
-            return await SaveChangesAsync();
+            var response = await SaveChangesAsync();
+
+            if (response)
+            {
+                return AccessResult.Success();
+            }
+
+            return AccessResult.Failed(new AccessError("Failed to delete roles", 
+                StatusCodes.Status400BadRequest));
         }
 
         /// <summary>
@@ -114,13 +175,19 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="roles">Roles to delete</param>
         /// <returns>Boolean value</returns>
-        public bool DeleteRoleRange(IEnumerable<TModel> roles)
+        public AccessResult DeleteRoleRange(IEnumerable<TModel> roles)
         {
             foreach (var role in roles)
             {
                 _roles.Remove(role);
             }
-            return SaveChanges();
+            var response = SaveChanges();
+            if (response)
+            {
+                return AccessResult.Success();
+            }
+            return AccessResult.Failed(new AccessError("Failed to delete roles",
+                StatusCodes.Status400BadRequest));
         }
 
 
@@ -129,10 +196,18 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="role">Role</param>
         /// <returns>role</returns>
-        public async Task<TModel> GetExistingRoleAsync(string role)
+        public async Task<AccessResult<TModel>> GetExistingRoleAsync(string role)
         {
-            return await _roles.Where(s => s.Name == role)
+            var currentRole =  await _roles.Where(s => s.Name == role)
                 .FirstOrDefaultAsync();
+
+            if(currentRole == null)
+            {
+                return AccessResult<TModel>.Failed(new AccessError("Role does not exist",
+                    StatusCodes.Status404NotFound));
+            }
+
+            return AccessResult<TModel>.Success(currentRole);
         }
 
         /// <summary>
@@ -140,17 +215,25 @@ namespace AdeAuth.Services.Authentication
         /// </summary>
         /// <param name="role">Role</param>
         /// <returns>role</returns>
-        public TModel GetExistingRole(string role)
+        public AccessResult<TModel> GetExistingRole(string role)
         {
-            return _roles.Where(s => s.Name == role).FirstOrDefault();
+            var currentRole = _roles.Where(s => s.Name == role).FirstOrDefault();
+
+            if (currentRole == null)
+            {
+                return AccessResult<TModel>.Failed(new AccessError("Role does not exist",
+                    StatusCodes.Status404NotFound));
+            }
+
+            return AccessResult<TModel>.Success(currentRole);
         }
 
 
-        public IEnumerable<TModel> GetExistingRoles
+        public AccessResult<IEnumerable<TModel>> GetExistingRoles
         {
             get
             {
-                return _roles.ToList();
+                return AccessResult<IEnumerable<TModel>>.Success(_roles.ToList());
             }
         }
         private readonly DbSet<TModel> _roles;

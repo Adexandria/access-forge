@@ -1,4 +1,5 @@
 ﻿using AdeAuth.Models;
+using AdeAuth.Services.Utility;
 
 namespace AdeAuth.Services.Interfaces
 {
@@ -13,19 +14,19 @@ namespace AdeAuth.Services.Interfaces
         /// </summary>
         /// <param name="roles">New roles to add</param>
         /// <returns>boolean value</returns>
-        Task<bool> CreateRolesAsync(List<TModel> roles);
+        Task<AccessResult> CreateRolesAsync(List<TModel> roles);
 
         /// <summary>
         /// Create roles
         /// </summary>
         /// <param name="roles">New roles to add</param>
         /// <returns>boolean value</returns>
-        bool CreateRoles(List<TModel> roles);
+        AccessResult CreateRoles(List<TModel> roles);
 
         /// <summary>
         /// Fetches all existing roles
         /// </summary>
-        IEnumerable<TModel> GetExistingRoles { get; }
+        AccessResult<IEnumerable<TModel>> GetExistingRoles { get; }
 
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace AdeAuth.Services.Interfaces
         /// </summary>
         /// <param name="role">Name of role</param>
         /// <returns>Role</returns>
-        Task<TModel> GetExistingRoleAsync(string role);
+        Task<AccessResult<TModel>> GetExistingRoleAsync(string role);
 
 
         /// <summary>
@@ -41,28 +42,28 @@ namespace AdeAuth.Services.Interfaces
         /// </summary>
         /// <param name="role">Name of role</param>
         /// <returns>Role</returns>
-        TModel GetExistingRole(string role);
+        AccessResult<TModel> GetExistingRole(string role);
 
         /// <summary>
         /// Creates role asynchronous
         /// </summary>
         /// <param name="role">New role to add</param>
         /// <returns>boolean value</returns>
-        Task<bool> CreateRoleAsync(TModel role);
+        Task<AccessResult> CreateRoleAsync(TModel role);
 
         /// <summary>
         /// Creates role 
         /// </summary>
         /// <param name="role">New role to add</param>
         /// <returns>boolean value</returns>
-        bool CreateRole(TModel role);
+        AccessResult CreateRole(TModel role);
 
         /// <summary>
         /// Delete roles asynchronous
         /// </summary>
         /// <param name="roles">Roles to delete</param>
         /// <returns>Boolean value</returns>
-        Task<bool> DeleteRoleRangeAsync(IEnumerable<TModel> roles);
+        Task<AccessResult> DeleteRoleRangeAsync(IEnumerable<TModel> roles);
 
 
         /// <summary>
@@ -70,14 +71,14 @@ namespace AdeAuth.Services.Interfaces
         /// </summary>
         /// <param name="roles">Roles to delete</param>
         /// <returns>Boolean value</returns>
-        bool DeleteRoleRange(IEnumerable<TModel> roles);
+        AccessResult DeleteRoleRange(IEnumerable<TModel> roles);
 
         /// <summary>
         /// Delete role asynchronous
         /// </summary>
         /// <param name="role">Role to delete</param>
         /// <returns>Boolean value</returns>
-        Task<bool> DeleteRoleAsync(TModel role);
+        Task<AccessResult> DeleteRoleAsync(TModel role);
 
 
         /// <summary>
@@ -85,6 +86,6 @@ namespace AdeAuth.Services.Interfaces
         /// </summary>
         /// <param name="role">Role to delete</param>
         /// <returns>Boolean value</returns>
-        bool DeleteRole(TModel role);
+        AccessResult DeleteRole(TModel role);
     }
 }
