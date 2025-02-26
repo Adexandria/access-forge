@@ -1,6 +1,7 @@
 using AdeAuth.Db;
 using AdeAuth.Models;
 using AdeAuth.Services;
+using AdeAuth.Services.Authentication;
 using AdeAuth.Services.Interfaces;
 using Moq;
 
@@ -13,20 +14,18 @@ namespace AdeAuth.Tests
         {
             base.Setup();
             identityContext = new(dbOptions);
-            passwordManager = new Mock<IPasswordManager>();
             userService = new UserService<IdentityContext,ApplicationUser>
-                (identityContext,passwordManager.Object);
+                (identityContext);
         }
         [Test]
-        public async Task ShouldCreateUsersSuccessfully()
+        public async Task ShouldCreateUsersAsyncSuccessfully()
         {
-
-            ApplicationUser user = new() 
-            { 
+            ApplicationUser user = new()
+            {Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
                 FirstName = "Adeola",
-                LastName="Aderibigbe",
+                LastName = "Aderibigbe",
                 UserName = "Addie",
-                AuthenticatorKey=string.Empty,
+                AuthenticatorKey = string.Empty,
                 Email = "adeolaaderibigbe09@gmail.com",
                 PasswordHash = "1234567",
                 PhoneNumber = "1234567890",
@@ -35,11 +34,219 @@ namespace AdeAuth.Tests
 
             var response = await userService.CreateUserAsync(user);
 
-            Assert.IsTrue(response);
+            Assert.IsTrue(response.IsSuccessful);
         }
 
         [Test]
-        public async Task ShouldAuthenticateUserUsingEmailSuccessfully()
+        public void ShouldCreateUsersSuccessfully()
+        {
+            ApplicationUser user = new()
+            {Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+            var response = userService.CreateUser(user);
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+
+        [Test]
+        public async Task ShouldUpdateUserAsyncSuccessfully()
+        {
+            ApplicationUser user = new()
+            {
+                Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+            _ = await userService.CreateUserAsync(user);
+
+            var response = await userService.UpdateUserAsync(user);
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+        [Test]
+        public void ShouldUpdateUserSuccessfully()
+        {
+            ApplicationUser user = new()
+            {
+
+                Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+            _ =  userService.CreateUser(user);
+
+            var response = userService.UpdateUser(user);
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+
+        [Test]
+        public async Task ShouldDeleteUserAsyncSuccessfully()
+        {
+            ApplicationUser user = new()
+            {
+                Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+            _ = await userService.CreateUserAsync(user);
+
+            var response = await userService.DeleteUserAsync(user);
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+        [Test]
+        public void ShouldDeleteUserSuccessfully()
+        {
+            ApplicationUser user = new()
+            {
+                Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+            _ =  userService.CreateUser(user);
+
+            var response = userService.DeleteUser(user);
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+
+
+        [Test]
+        public async Task ShouldFetchUserByEmailAsyncSuccessfully()
+        {
+            ApplicationUser user = new()
+            {
+                Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+            _ = await userService.CreateUserAsync(user);
+
+            var response = await userService.FetchUserByEmailAsync("adeolaaderibigbe09@gmail.com");
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+        [Test]
+        public void ShouldFetchUserByEmailSuccessfully()
+        {
+            ApplicationUser user = new()
+            {
+                Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+            _ = userService.CreateUser(user);
+
+            var response = userService.FetchUserByEmail("adeolaaderibigbe09@gmail.com");
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+        [Test]
+        public async Task ShouldFetchUserByIdAsyncSuccessfully()
+        {
+            ApplicationUser user = new()
+            {
+                Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+           _ = await userService.CreateUserAsync(user);
+
+            var response = await userService.FetchUserByIdAsync(new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"));
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+        [Test]
+        public void ShouldFetchUserByIdSuccessfully()
+        {
+            ApplicationUser user = new()
+            {Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+                FirstName = "Adeola",
+                LastName = "Aderibigbe",
+                UserName = "Addie",
+                AuthenticatorKey = string.Empty,
+                Email = "adeolaaderibigbe09@gmail.com",
+                PasswordHash = "1234567",
+                PhoneNumber = "1234567890",
+                Salt = "1234567890"
+            };
+
+            _ =  userService.CreateUserAsync(user);
+
+            var response =  userService.FetchUserById(new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"));
+
+            Assert.IsTrue(response.IsSuccessful);
+        }
+
+        [Test]
+        public async Task ShouldFetchUserByUsernameAsyncSuccessfully()
         {
             ApplicationUser user = new()
             {
@@ -52,40 +259,35 @@ namespace AdeAuth.Tests
                 PhoneNumber = "1234567890",
                 Salt = "1234567890"
             };
-            passwordManager.Setup(s => s.VerifyPassword(It.IsAny<string>(),
-                It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
-           _ =  await userService.CreateUserAsync(user);
+           _ = await userService.CreateUserAsync(user);
 
-           var response = await  userService.AuthenticateUsingEmailAsync("adeolaaderibigbe09@gmail.com", "1234567");
+            var response = await userService.FetchUserByUsernameAsync("Addie");
 
-            Assert.That(response, Is.Not.Null);
+            Assert.IsTrue(response.IsSuccessful);
         }
 
         [Test]
-        public async Task ShouldAuthenticateUserUsingUsernameSuccessfully()
+        public void ShouldFetchUserByUsernameSuccessfully()
         {
             ApplicationUser user = new()
             {
                 FirstName = "Adeola",
                 LastName = "Aderibigbe",
-                UserName="Addie",
+                UserName = "Addie",
                 AuthenticatorKey = string.Empty,
                 Email = "adeolaaderibigbe09@gmail.com",
                 PasswordHash = "1234567",
                 PhoneNumber = "1234567890",
-                Salt = "1234567890",
+                Salt = "1234567890"
             };
-            passwordManager.Setup(s => s.VerifyPassword(It.IsAny<string>(),
-                It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
-            await userService.CreateUserAsync(user);
+            _ = userService.CreateUser(user);
 
-            var response = await userService.AuthenticateUsingUsernameAsync("Addie", "1234567");
+            var response = userService.FetchUserByUsername("Addie");
 
-            Assert.That(response, Is.Not.Null);
+            Assert.IsTrue(response.IsSuccessful);
         }
-
         [TearDown]
         public void TearDown()
         {
@@ -95,7 +297,5 @@ namespace AdeAuth.Tests
         private IdentityContext identityContext;
 
         private IUserService<ApplicationUser> userService;
-
-        private Mock<IPasswordManager> passwordManager;
     }
 }

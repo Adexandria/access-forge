@@ -29,6 +29,11 @@ namespace AdeAuth.Services.Authentication
             return await SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Creates role
+        /// </summary>
+        /// <param name="role">New role to add</param>
+        /// <returns>boolean value</returns>
         public bool CreateRole(TModel role)
         {
             _roles.Add(role);
@@ -52,6 +57,11 @@ namespace AdeAuth.Services.Authentication
             return await SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Create roles
+        /// </summary>
+        /// <param name="roles">New roles to add</param>
+        /// <returns>boolean value</returns>
         public bool CreateRoles(List<TModel> roles)
         {
             foreach (var role in roles)
@@ -74,6 +84,11 @@ namespace AdeAuth.Services.Authentication
             return await SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Delete role
+        /// </summary>
+        /// <param name="role">Role to delete</param>
+        /// <returns>Boolean value</returns>
         public bool DeleteRole(TModel role)
         {
             _roles.Remove(role);
@@ -94,7 +109,11 @@ namespace AdeAuth.Services.Authentication
             return await SaveChangesAsync();
         }
 
-
+        /// <summary>
+        /// Delete roles
+        /// </summary>
+        /// <param name="roles">Roles to delete</param>
+        /// <returns>Boolean value</returns>
         public bool DeleteRoleRange(IEnumerable<TModel> roles)
         {
             foreach (var role in roles)

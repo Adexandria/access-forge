@@ -37,7 +37,11 @@ namespace AdeAuth.Services
                         if (entry.Entity is TModel)
                         {
                             var proposedValues = entry.CurrentValues;
+
                             var databaseValues = entry.GetDatabaseValues();
+
+                            if (databaseValues == null)
+                                return saved;
 
                             foreach (var property in proposedValues.Properties)
                             {
@@ -88,7 +92,11 @@ namespace AdeAuth.Services
                         if (entry.Entity is TModel)
                         {
                             var proposedValues = entry.CurrentValues;
+
                             var databaseValues = entry.GetDatabaseValues();
+
+                            if (databaseValues == null)
+                                return saved;
 
                             foreach (var property in proposedValues.Properties)
                             {
