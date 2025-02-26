@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdeAuth.Services.Authentication
 {
-    internal class UserRoleService<TDbContext, TUser, TRole> : Repository<TDbContext, UserRole>, IUserRoleService<TUser>
+    public class UserRoleService<TDbContext, TUser, TRole> : Repository<TDbContext, UserRole>, IUserRoleService<TUser>
         where TUser : ApplicationUser
         where TDbContext : DbContext
         where TRole : ApplicationRole
@@ -26,13 +26,18 @@ namespace AdeAuth.Services.Authentication
                 return AccessResult.Failed(new AccessError("Invalid role", StatusCodes.Status404NotFound));
             }
 
+            if (!_users.Any(s => s == user)) 
+            {
+                return AccessResult.Failed(new AccessError("Failed to Add role to user", StatusCodes.Status400BadRequest));
+            }
+
             _userRoles.Add(new UserRole()
             {
                 RoleId = currentRole.Id,
                 UserId = user.Id
             });
 
-            if (SaveChanges())
+            if (!SaveChanges())
             {
                 return AccessResult.Failed(new AccessError("Failed to Add role to user", StatusCodes.Status400BadRequest));
             }
@@ -59,7 +64,7 @@ namespace AdeAuth.Services.Authentication
                 UserId = currentUser.Id
             });
 
-            if (SaveChanges())
+            if (!SaveChanges())
             {
                 return AccessResult.Failed(new AccessError("Failed to Add role to user", StatusCodes.Status400BadRequest));
             }
@@ -73,6 +78,11 @@ namespace AdeAuth.Services.Authentication
             if (currentRole == null)
             {
                 return AccessResult.Failed(new AccessError("Invalid role", StatusCodes.Status404NotFound));
+            }
+
+            if (!_users.Any(s => s == user))
+            {
+                return AccessResult.Failed(new AccessError("Failed to Add role to user", StatusCodes.Status400BadRequest));
             }
 
             _userRoles.Add(new UserRole()
@@ -128,15 +138,21 @@ namespace AdeAuth.Services.Authentication
                 return AccessResult.Failed(new AccessError("Invalid role", StatusCodes.Status404NotFound));
             }
 
+            if (!_users.Any(s => s == user))
+            {
+                return AccessResult.Failed(new AccessError("Failed to Add role to user", StatusCodes.Status400BadRequest));
+            }
+
             var userRole = _userRoles.Where(s => s.UserId == user.Id && s.RoleId == currentRole.Id).FirstOrDefault();
 
             if (userRole == null)
             {
                 return AccessResult.Failed(new AccessError("Role isn't associated with this user", StatusCodes.Status404NotFound));
             }
+
             _userRoles.Remove(userRole);
 
-            if (SaveChanges())
+            if (!SaveChanges())
             {
                 return AccessResult.Failed(new AccessError("Failed to Add role to user", StatusCodes.Status400BadRequest));
             }
@@ -150,6 +166,11 @@ namespace AdeAuth.Services.Authentication
             if (currentRole == null)
             {
                 return AccessResult.Failed(new AccessError("Invalid role", StatusCodes.Status404NotFound));
+            }
+
+            if (!_users.Any(s => s == user))
+            {
+                return AccessResult.Failed(new AccessError("Failed to Add role to user", StatusCodes.Status400BadRequest));
             }
 
             var userRole = await _userRoles.Where(s => s.UserId == user.Id && s.RoleId == currentRole.Id).FirstOrDefaultAsync();
