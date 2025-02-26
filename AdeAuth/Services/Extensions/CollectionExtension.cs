@@ -1,5 +1,4 @@
-﻿using AdeAuth.Services.Interfaces;
-using AdeAuth.Services.Utility;
+﻿
 
 
 namespace AdeAuth.Services.Extensions

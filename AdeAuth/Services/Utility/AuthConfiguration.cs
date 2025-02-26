@@ -27,12 +27,12 @@ namespace AdeAuth.Services.Utility
         {
             var types = assembly.GetTypes();
 
-            if (types.GetServiceTypes(typeof(IUserService<>)) is DependencyType serviceType)
+            if (types.GetServiceType(typeof(IUserService<>)) is DependencyType serviceType)
             {
                 dependencyTypes.Add(serviceType); 
             }
 
-            if (types.GetServiceTypes(typeof(IRoleService<>)) is DependencyType roleType)
+            if (types.GetServiceType(typeof(IRoleService<>)) is DependencyType roleType)
             {
                 dependencyTypes.Add(roleType);    
             }
@@ -54,7 +54,7 @@ namespace AdeAuth.Services.Utility
         }
 
         /// <summary>
-        /// Sets up sql server
+        /// Sets up sql server connection string
         /// </summary>
         /// <param name="connectionString"></param>
         public void UseSqlServer(string connectionString)

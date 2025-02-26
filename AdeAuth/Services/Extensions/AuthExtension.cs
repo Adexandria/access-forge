@@ -1,12 +1,4 @@
-﻿using AdeAuth.Models;
-using AdeAuth.Services.Interfaces;
-using AdeAuth.Services.Utility;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AdeAuth.Services.Utility;
 
 namespace AdeAuth.Services.Extensions
 {
@@ -18,10 +10,8 @@ namespace AdeAuth.Services.Extensions
         /// <param name="types">Type to register</param>
         /// <param name="type">Type to search</param>
         /// <returns>dependency type</returns>
-        public static DependencyType GetServiceTypes(this Type[] serviceTypes, Type type)
+        public static DependencyType GetServiceType(this Type[] serviceTypes, Type type)
         {
-            var dependencyTypes = new List<DependencyType>();
-
             var implementationType = serviceTypes.Where(s => s.GetInterfaces()
             .Any(p => p.Name == type.Name) && !s.IsAbstract).FirstOrDefault();
 
