@@ -70,7 +70,7 @@ namespace AdeAuth.Services
 
             Dictionary<string,object> claims = claimResponse.Data?.ToDictionary(s => s.ClaimType, s => (object)s.ClaimValue);
 
-            var loginActivity = await UpdateLoginActivityAsync(user.Id);
+            var loginActivity = await UpdateLoginActivityWithDeviceLocatorAsync(user.Id);
 
             var accessToken = _tokenProvider.GenerateToken(claims, _tokenConfiguration.ExpirationTime);
 
@@ -121,7 +121,7 @@ namespace AdeAuth.Services
 
             Dictionary<string, object> claims = claimResponse.Data?.ToDictionary(s => s.ClaimType, s => (object)s.ClaimValue);
 
-            var loginActivity =  UpdateLoginActivity(user.Id);
+            var loginActivity =  UpdateLoginActivityWithDeviceLocator(user.Id);
 
             var accessToken = _tokenProvider.GenerateToken(claims, _tokenConfiguration.ExpirationTime);
 
@@ -171,7 +171,7 @@ namespace AdeAuth.Services
 
             Dictionary<string, object> claims = claimResponse.Data?.ToDictionary(s => s.ClaimType, s => (object)s.ClaimValue);
 
-            var loginActivity = await UpdateLoginActivityAsync(user.Id);
+            var loginActivity = await UpdateLoginActivityWithDeviceLocatorAsync(user.Id);
 
             var accessToken = _tokenProvider.GenerateToken(claims, _tokenConfiguration.ExpirationTime);
 
@@ -219,7 +219,7 @@ namespace AdeAuth.Services
 
             Dictionary<string, object> claims = claimResponse.Data?.ToDictionary(s => s.ClaimType, s => (object)s.ClaimValue);
 
-            var loginActivity =  UpdateLoginActivity(user.Id);
+            var loginActivity =  UpdateLoginActivityWithDeviceLocator(user.Id);
 
             var accessToken = _tokenProvider.GenerateToken(claims, _tokenConfiguration.ExpirationTime);
 
@@ -401,6 +401,7 @@ namespace AdeAuth.Services
             return SignInResult.LockedOut();
         }
         #endregion
+
         // store update external authetication
         #region Generate otp using google authenticator
         public SignInResult<string> GenerateOtpUsingGoogleAuthenticator(int expirationTimeInMinutes)
@@ -435,8 +436,9 @@ namespace AdeAuth.Services
 
         // sign out to delete all activities including refresh token and login activities
 
-        private async Task<LoginActivity> UpdateLoginActivityAsync(Guid userId)
+        private async Task<LoginActivity> UpdateLoginActivityWithDeviceLocatorAsync(Guid userId)
         {
+            // handle exceptions because a device might not exist and you are making it configurable
             var deviceConfiguration = _locatorService.FetchUserDevice();
 
             var ipAddress = _locatorService.FetchIpAddress();
@@ -461,7 +463,8 @@ namespace AdeAuth.Services
             return updateLoginActivity.IsSuccessful ? loginActivity : default;
         }
 
-        private LoginActivity UpdateLoginActivity(Guid userId)
+
+        private LoginActivity UpdateLoginActivityWithDeviceLocator(Guid userId)
         {
             var deviceConfiguration = _locatorService.FetchUserDevice();
 
@@ -480,7 +483,7 @@ namespace AdeAuth.Services
 
                 var logicActivityResponse = _loginActivityService.CreateLoginActivity(loginActivity);
 
-                return logicActivityResponse.IsSuccessful ? loginActivity: default  ;
+                return logicActivityResponse.IsSuccessful ? loginActivity: default;
             }
             else
             {

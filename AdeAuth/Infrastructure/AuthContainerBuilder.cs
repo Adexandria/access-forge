@@ -7,11 +7,11 @@ using AdeAuth.Services.Interfaces;
 using AdeAuth.Services.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -291,9 +291,9 @@ namespace AdeAuth.Infrastructure
 
             services.AddScoped<IUserRoleService<TUser>, UserRoleService<TDbContext, TUser, TRole>>();
 
-            services.AddScoped<Services.SignInManager<TUser>>();
+            services.AddScoped<SignInManager<TUser>>();
 
-            services.AddScoped<Services.UserManager<TUser>>();
+            services.AddScoped<UserManager<TUser>>();
 
             services.AddScoped<IUserClaimService, UserClaimService<TDbContext>>();
 
@@ -317,6 +317,8 @@ namespace AdeAuth.Infrastructure
             services.AddSingleton<AccessOption>();
 
             services.AddHttpContextAccessor();
+       
+            services.AddLogging(c => c.AddConsole()); 
         }
 
         /// <summary>

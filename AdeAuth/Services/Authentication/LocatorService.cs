@@ -5,24 +5,26 @@ using DeviceDetectorNET.Cache;
 using DeviceDetectorNET.Parser;
 using IPinfo;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace AdeAuth.Services.Authentication
 {
     internal class LocatorService : ILocatorService
     {
-        // a transient
-        public LocatorService(IHttpContextAccessor contextAccessor, IpInfoConfiguration infoConfiguration)
+        // a constructor
+        public LocatorService(IHttpContextAccessor contextAccessor,
+           ILoggerFactory loggerFactory, IpInfoConfiguration infoConfiguration = null)
         {
             DeviceDetector
                 .SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
 
+            _logger = loggerFactory.CreateLogger<LocatorService>();
+
             _context = contextAccessor.HttpContext;
 
-            client = new IPinfoClient.Builder()
-                .AccessToken(infoConfiguration.APIKey)
-                .Build();
+            _apiKey = infoConfiguration?.APIKey;
         }
-        // ensure you manage the exceptions if the user uses a console instead of 
+
         public DeviceConfiguration FetchUserDevice()
         {
             var userAgent = _context?.Request?.Headers["User-Agent"];
@@ -70,6 +72,12 @@ namespace AdeAuth.Services.Authentication
             {
                 return default;
             }
+            IPinfoClient client = CreateClient(_apiKey);
+
+            if (client == null)
+            {
+                return default;
+            }
 
             var ipResponse = client.IPApi.GetDetails(ipAddress);
 
@@ -83,14 +91,32 @@ namespace AdeAuth.Services.Authentication
         public string FetchIpAddress()
         {
             string _ipAddress = _context?.Request?.Headers["X-Forwarded-For"];
-            if (!string.IsNullOrEmpty(_ipAddress))
+            if (string.IsNullOrEmpty(_ipAddress))
             {
-                return _ipAddress.Split(',')[0];
+                return default;
+            }
+            return _ipAddress.Split(',')[0];
+        }
+
+        private IPinfoClient CreateClient(string apiKey)
+        {
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                _logger.LogInformation("No API key found, locator client will not be created: {DateTime}", DateTime.UtcNow);
+                return default;
             }
 
-            return null;
+            IPinfoClient client = new IPinfoClient.Builder()
+                .AccessToken(apiKey)
+                .Build();
+
+            _logger.LogInformation("User Locator client created: {DateTime}", DateTime.UtcNow);
+
+            return client;
         }
-        private readonly IPinfoClient client;
+
+        private readonly string _apiKey;
         private readonly HttpContext _context;
+        private readonly ILogger<LocatorService> _logger;
     }
 }
