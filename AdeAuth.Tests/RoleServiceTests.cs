@@ -25,8 +25,8 @@ namespace AdeAuth.Tests
             };
 
             var response = await roleService.CreateRoleAsync(role);
-
-            Assert.True(response.IsSuccessful);
+            
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace AdeAuth.Tests
 
             var response = roleService.CreateRole(role);
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -57,9 +57,11 @@ namespace AdeAuth.Tests
 
             var response = roleService.CreateRoles(roles);
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
+
+        // Replace all instances of Assert.True(...) and Assert.False(...) with Assert.That(..., Is.True) and Assert.That(..., Is.False)
 
         [Test]
         public async Task ShouldAddRolesAsyncSuccessfully()
@@ -75,7 +77,7 @@ namespace AdeAuth.Tests
 
             var response = await roleService.CreateRolesAsync(roles);
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -87,11 +89,11 @@ namespace AdeAuth.Tests
                 Name = "User"
             };
 
-            _ =  roleService.CreateRole(role);
+            _ = roleService.CreateRole(role);
 
             var response = roleService.DeleteRole(role);
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -107,7 +109,7 @@ namespace AdeAuth.Tests
 
             var response = await roleService.DeleteRoleAsync(role);
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -115,7 +117,7 @@ namespace AdeAuth.Tests
         {
             var response = await roleService.DeleteRoleAsync(new ApplicationRole());
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -127,7 +129,7 @@ namespace AdeAuth.Tests
             });
 
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -143,7 +145,7 @@ namespace AdeAuth.Tests
 
             var response = roleService.DeleteRoleRange(new[] { role });
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -159,7 +161,7 @@ namespace AdeAuth.Tests
 
             var response = await roleService.DeleteRoleRangeAsync(new[] { role });
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [TearDown]
