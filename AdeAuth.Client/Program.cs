@@ -51,7 +51,6 @@ namespace AdeAuth.Client
             });
 
 
-
             services.AddScoped<Application>();
 
             using var provider = services.BuildServiceProvider();
