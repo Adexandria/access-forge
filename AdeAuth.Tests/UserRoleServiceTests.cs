@@ -48,7 +48,7 @@ namespace AdeAuth.Tests
 
             var response =  userRoleService.AddUserRole(user, "User");
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.AddUserRoleAsync(user, "User");
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace AdeAuth.Tests
 
             var response =  userRoleService.AddUserRole(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.AddUserRoleAsync(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace AdeAuth.Tests
 
             var response = userRoleService.AddUserRole(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.AddUserRoleAsync(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace AdeAuth.Tests
 
             var response =  userRoleService.RemoveUserRole(user, "User");
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -244,7 +244,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.RemoveUserRoleAsync(user, "User");
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
 
@@ -274,7 +274,7 @@ namespace AdeAuth.Tests
 
             var response = userRoleService.RemoveUserRole(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -303,7 +303,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.RemoveUserRoleAsync(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
 
@@ -327,7 +327,7 @@ namespace AdeAuth.Tests
 
             var response = userRoleService.RemoveUserRole(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
 
@@ -351,7 +351,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.RemoveUserRoleAsync(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
         [Test]
         public void ShouldFailToRemoveUserRoleIfUserRoleDoesNotExist()
@@ -379,7 +379,7 @@ namespace AdeAuth.Tests
 
             var response =  userRoleService.RemoveUserRole(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -408,7 +408,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.RemoveUserRoleAsync(user, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -440,7 +440,7 @@ namespace AdeAuth.Tests
 
             var response =  userRoleService.AddUserRole(user.Email, "User");
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -472,7 +472,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.AddUserRoleAsync(user.Email, "User");
 
-            Assert.True(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
 
@@ -489,7 +489,7 @@ namespace AdeAuth.Tests
 
             var response =  userRoleService.AddUserRole("adeolaaderibigbe09@gmail.com", "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -505,7 +505,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.AddUserRoleAsync("adeolaaderibigbe09@gmail.com", "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -528,7 +528,7 @@ namespace AdeAuth.Tests
 
             var response =  userRoleService.AddUserRole(user.Email, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [Test]
@@ -551,7 +551,7 @@ namespace AdeAuth.Tests
 
             var response = await userRoleService.AddUserRoleAsync(user.Email, "User");
 
-            Assert.False(response.IsSuccessful);
+            Assert.That(!response.IsSuccessful);
         }
 
         [TearDown]

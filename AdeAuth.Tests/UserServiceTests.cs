@@ -34,7 +34,7 @@ namespace AdeAuth.Tests
 
             var response = await userService.CreateUserAsync(user);
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace AdeAuth.Tests
 
             var response = userService.CreateUser(user);
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
 
@@ -78,7 +78,7 @@ namespace AdeAuth.Tests
 
             var response = await userService.UpdateUserAsync(user);
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace AdeAuth.Tests
 
             var response = userService.UpdateUser(user);
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
 
@@ -126,7 +126,7 @@ namespace AdeAuth.Tests
 
             var response = await userService.DeleteUserAsync(user);
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace AdeAuth.Tests
 
             var response = userService.DeleteUser(user);
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
 
@@ -174,7 +174,7 @@ namespace AdeAuth.Tests
 
             var response = await userService.FetchUserByEmailAsync("adeolaaderibigbe09@gmail.com");
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -197,7 +197,7 @@ namespace AdeAuth.Tests
 
             var response = userService.FetchUserByEmail("adeolaaderibigbe09@gmail.com");
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -220,14 +220,15 @@ namespace AdeAuth.Tests
 
             var response = await userService.FetchUserByIdAsync(new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"));
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
         public void ShouldFetchUserByIdSuccessfully()
         {
             ApplicationUser user = new()
-            {Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
+            {
+                Id = new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"),
                 FirstName = "Adeola",
                 LastName = "Aderibigbe",
                 UserName = "Addie",
@@ -242,7 +243,7 @@ namespace AdeAuth.Tests
 
             var response =  userService.FetchUserById(new Guid("a8903f84-94ea-484e-b71f-79396fd85fbf"));
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -264,7 +265,7 @@ namespace AdeAuth.Tests
 
             var response = await userService.FetchUserByUsernameAsync("Addie");
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
 
         [Test]
@@ -286,7 +287,7 @@ namespace AdeAuth.Tests
 
             var response = userService.FetchUserByUsername("Addie");
 
-            Assert.IsTrue(response.IsSuccessful);
+            Assert.That(response.IsSuccessful);
         }
         [TearDown]
         public void TearDown()
