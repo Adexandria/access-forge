@@ -13,7 +13,7 @@ namespace AdeAuth.Services.Authentication
     {
         // a constructor
         public LocatorService(IHttpContextAccessor contextAccessor,
-            IpInfoConfiguration infoConfiguration, ILoggerFactory loggerFactory)
+           ILoggerFactory loggerFactory, IpInfoConfiguration infoConfiguration = null)
         {
             DeviceDetector
                 .SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
