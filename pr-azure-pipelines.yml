@@ -17,3 +17,17 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 - script: dotnet test *.Tests/*.Tests.csproj
   displayName: 'Run test'
+- script: dotnet test *.Tests/*.Tests.csproj --collect:"XPlat Code Coverage"
+
+- task: reportgenerator@5
+  inputs:
+    reports: 'coverage.cobertura.xml'
+    targetdir: 'coveragereport'
+    sourcedirs: '*.Tests/TestResults/**'
+- task: WhiteSource@21
+  inputs:
+    cwd: '$(System.DefaultWorkingDirectory)'
+    projectName: 'access-forge'
+
+
+
