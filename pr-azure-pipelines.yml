@@ -15,15 +15,13 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
-- script: dotnet test *.Tests/*.Tests.csproj
+- script: dotnet test *.Tests/*.Tests.csproj --collect:"XPlat Code Coverage
   displayName: 'Run test'
-- script: dotnet test *.Tests/*.Tests.csproj --collect:"XPlat Code Coverage"
-
 - task: reportgenerator@5
   inputs:
-    reports: 'coverage.cobertura.xml'
+    reports: '*.Tests/TestResults/**/coverage.cobertura.xml'
     targetdir: 'coveragereport'
-    sourcedirs: '*.Tests/TestResults/**'
+    sourcedirs: '*.Tests'
 - task: WhiteSource@21
   inputs:
     cwd: '$(System.DefaultWorkingDirectory)'
