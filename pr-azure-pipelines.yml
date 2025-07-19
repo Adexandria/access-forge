@@ -21,10 +21,5 @@ steps:
   inputs:
     reports: '*.Tests/TestResults/**/coverage.cobertura.xml'
     targetdir: 'coveragereport'
-- task: WhiteSource@21
-  inputs:
-    cwd: '$(System.DefaultWorkingDirectory)'
-    projectName: 'access-forge'
-
 
 
