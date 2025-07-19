@@ -21,7 +21,6 @@ steps:
   inputs:
     reports: '*.Tests/TestResults/**/coverage.cobertura.xml'
     targetdir: 'coveragereport'
-    sourcedirs: '*.Tests'
 - task: WhiteSource@21
   inputs:
     cwd: '$(System.DefaultWorkingDirectory)'
