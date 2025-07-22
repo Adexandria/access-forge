@@ -3,14 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AdeAuth.Services.Utility
 {
-    public class AccessOption
+    public class AccessOption(AccessRule accessRule = null)
     {
-        public AccessOption(AccessRule accessRule = null)
-        { 
-            _validate =  accessRule == null 
-                ? new ValidateRule(new AccessRule()) : new ValidateRule(accessRule);
-        }
-
         public List<string> Validate(string password)
         {
           var errors = _validate.CheckNumber(password)
@@ -36,6 +30,7 @@ namespace AdeAuth.Services.Utility
            }
         }
 
-        private readonly ValidateRule _validate;
+        private readonly ValidateRule _validate = accessRule == null
+                ? new ValidateRule(new AccessRule()) : new ValidateRule(accessRule);
     }
 }

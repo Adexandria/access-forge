@@ -6,15 +6,9 @@ using System.Threading.Tasks;
 
 namespace AdeAuth.Services.Utility
 {
-    public class DependencyType
+    public class DependencyType(Type interfaceType, Type implementationType)
     {
-        public DependencyType(Type interfaceType, Type implementationType)
-        {
-            InterfaceType = interfaceType;
-            ImplementationType = implementationType;
-        }
-
-        public Type InterfaceType { get; set; }
-        public Type ImplementationType { get; set; }
+        public Type InterfaceType { get; set; } = interfaceType;
+        public Type ImplementationType { get; set; } = implementationType;
     }
 }

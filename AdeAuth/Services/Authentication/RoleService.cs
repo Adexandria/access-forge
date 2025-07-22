@@ -10,14 +10,10 @@ namespace AdeAuth.Services.Authentication
     /// Manages role services
     /// </summary>
     /// <typeparam name="TRole">Application role</typeparam>
-    public class RoleService<TDbContext, TModel> : Repository<TDbContext, TModel>, IRoleService<TModel>
+    public class RoleService<TDbContext, TModel>(TDbContext dbContext) : Repository<TDbContext, TModel>(dbContext), IRoleService<TModel>
         where TDbContext : DbContext
         where TModel : ApplicationRole
     {
-        public RoleService(TDbContext dbContext) : base(dbContext)
-        {
-            _roles = dbContext.Set<TModel>();
-        }
 
         /// <summary>
         /// Creates role
@@ -233,10 +229,10 @@ namespace AdeAuth.Services.Authentication
         {
             get
             {
-                return AccessResult<IEnumerable<TModel>>.Success(_roles.ToList());
+                return AccessResult<IEnumerable<TModel>>.Success([.. _roles]);
             }
         }
-        private readonly DbSet<TModel> _roles;
+        private readonly DbSet<TModel> _roles = dbContext.Set<TModel>();
     }
 
 }

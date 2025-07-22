@@ -6,28 +6,22 @@ namespace AdeAuth.Services.Utility
     /// <summary>
     /// Manages the response
     /// </summary>
-    public class Authenticator : IAuthenticator
+    /// <remarks>
+    /// Constructor
+    /// </remarks>
+    /// <param name="qrCodeImage">Qr code </param>
+    /// <param name="manualKey">Manual key</param>
+    public class Authenticator(string qrCodeImage, string manualKey) : IAuthenticator
     {
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="qrCodeImage">Qr code </param>
-        /// <param name="manualKey">Manual key</param>
-        public Authenticator(string qrCodeImage, string manualKey)
-        {
-           QrCodeImage = qrCodeImage;
-           ManualKey = manualKey;
-        }
 
         /// <summary>
         /// Qr code
         /// </summary>
-        public string QrCodeImage { get; set; }
+        public string QrCodeImage { get; set; } = qrCodeImage;
 
         /// <summary>
         /// Manual key from google authenticator
         /// </summary>
-        public string ManualKey { get; set; }
+        public string ManualKey { get; set; } = manualKey;
     }
 }

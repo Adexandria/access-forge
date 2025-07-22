@@ -9,13 +9,13 @@ namespace AdeAuth.Services.Utility
     {
         public Validator(AccessOption _accessOption)
         {
-            errors = new List<string>();
+            errors = [];
             accessOption = _accessOption;
         }
 
         public Validator()
         {
-            errors = new List<string>();
+            errors = [];
         }
 
 

@@ -11,18 +11,14 @@ namespace AdeAuth.Services.Authentication
     /// </summary>
     /// <typeparam name="TDbContext">Context to manage operation</typeparam>
     /// <typeparam name="TModel">Application user</typeparam>
-    public class UserService<TDbContext, TModel> : Repository<TDbContext, TModel>, IUserService<TModel>
+    /// <remarks>
+    /// A constructor
+    /// </remarks>
+    /// <param name="dbContext">Context to manage operation</param>
+    public class UserService<TDbContext, TModel>(TDbContext dbContext) : Repository<TDbContext, TModel>(dbContext), IUserService<TModel>
         where TDbContext : DbContext
         where TModel : ApplicationUser
     {
-        /// <summary>
-        /// A constructor
-        /// </summary>
-        /// <param name="dbContext">Context to manage operation</param>
-        public UserService(TDbContext dbContext) : base(dbContext)
-        {
-            _users = dbContext.Set<TModel>();
-        }
 
         /// create a method to fetch user with no tracking
 
@@ -211,6 +207,6 @@ namespace AdeAuth.Services.Authentication
             return AccessResult<TModel>.Success(response);
         }
 
-        private readonly DbSet<TModel> _users;
+        private readonly DbSet<TModel> _users = dbContext.Set<TModel>();
     }
 }

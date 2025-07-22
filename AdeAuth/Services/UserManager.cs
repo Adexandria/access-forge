@@ -35,7 +35,7 @@ namespace AdeAuth.Services
                 return AccessResult.Failed(response.Errors.Single());
             }
 
-            var claims = new List<UserClaim>()
+            var claims = new List<UserClaim>
             {
                 new()
                 {
@@ -74,7 +74,7 @@ namespace AdeAuth.Services
                 return AccessResult.Failed(response.Errors.Single());
             }
 
-            var claims = new List<UserClaim>()
+            var claims = new List<UserClaim>
             {
                 new()
                 {
@@ -1720,7 +1720,7 @@ namespace AdeAuth.Services
 
         private string GenerateToken(string email, string id)
         {
-            var claims = new Dictionary<string, object>()
+            var claims = new Dictionary<string, object>
             {
                 {ClaimTypes.Email, email},
                 {ClaimTypes.NameIdentifier, id}
