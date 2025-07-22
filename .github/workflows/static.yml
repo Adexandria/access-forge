@@ -39,7 +39,9 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - name: Create directory
-        run: mkdir -p Documentation/html
+        run: |
+          mkdir -p documentation/html
+          touch documentation/html/.nojekyll
       - name: Deploy to git pages
         id: deployment
         uses: DenverCoder1/doxygen-github-pages-action@v1.3.0
