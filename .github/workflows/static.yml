@@ -46,7 +46,7 @@ jobs:
         id: deployment
         uses: DenverCoder1/doxygen-github-pages-action@v1.3.0
         with:
-          folder: documentation/html
+          folder: Documentation/html
           config_file: Documentation/Doxyfile.config
           doxygen_version: 1.9.5
           github_token: ${{ secrets.GITHUB_TOKEN }}
