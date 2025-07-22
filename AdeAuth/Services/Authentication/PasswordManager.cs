@@ -6,13 +6,8 @@ namespace AdeAuth.Services.Authentication
     /// <summary>
     /// Manages password manager
     /// </summary>
-    class PasswordManager : IPasswordManager
+    class PasswordManager(AccessOption _accessOption) : IPasswordManager
     {
-
-        public PasswordManager(AccessOption _accessOption) 
-        { 
-            accessOption = _accessOption;
-        }
 
         /// <summary>
         /// Hashes password
@@ -44,6 +39,6 @@ namespace AdeAuth.Services.Authentication
             return currentPassword.Equals(hashedPassword);
         }
 
-        private readonly AccessOption accessOption;
+        private readonly AccessOption accessOption = _accessOption;
     }
 }

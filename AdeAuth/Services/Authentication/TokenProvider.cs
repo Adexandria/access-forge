@@ -11,17 +11,12 @@ namespace AdeAuth.Services.Authentication
     /// <summary>
     /// Manages token service
     /// </summary>
-    class TokenProvider : ITokenProvider
+    /// <remarks>
+    /// A constructor
+    /// </remarks>
+    /// <param name="tokenConfiguration">Details of token</param>
+    class TokenProvider(TokenConfiguration tokenConfiguration) : ITokenProvider
     {
-
-        /// <summary>
-        /// A constructor
-        /// </summary>
-        /// <param name="tokenConfiguration">Details of token</param>
-        public TokenProvider(TokenConfiguration tokenConfiguration)
-        {
-            _tokenConfiguration = tokenConfiguration ?? throw new NullReferenceException(nameof(tokenConfiguration));
-        }
 
         /// <summary>
         /// Generate refresh token based on size
@@ -220,7 +215,7 @@ namespace AdeAuth.Services.Authentication
             };
         }
 
-        private readonly TokenConfiguration _tokenConfiguration;
+        private readonly TokenConfiguration _tokenConfiguration = tokenConfiguration ?? throw new NullReferenceException(nameof(tokenConfiguration));
     }
 
 }

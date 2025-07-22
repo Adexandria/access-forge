@@ -3,14 +3,8 @@ using System.Text.RegularExpressions;
 
 namespace AdeAuth.Services.Utility
 {
-    internal class ValidateRule
+    internal class ValidateRule(AccessRule _accessRule)
     {
-        public ValidateRule(AccessRule _accessRule)
-        {
-            accessRule = _accessRule;
-            errors = new List<string>();
-        }
-
         public ValidateRule CheckSpecialLetter(string password)
         {
             if (accessRule.Password.HasSpecialNumber)
@@ -94,8 +88,8 @@ namespace AdeAuth.Services.Utility
 
         }
 
-        private readonly AccessRule accessRule;
+        private readonly AccessRule accessRule = _accessRule;
 
-        private readonly List<string> errors;
+        private readonly List<string> errors = [];
     }
 }

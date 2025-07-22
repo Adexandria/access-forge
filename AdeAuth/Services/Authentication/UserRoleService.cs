@@ -6,18 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdeAuth.Services.Authentication
 {
-    public class UserRoleService<TDbContext, TUser, TRole> : Repository<TDbContext, UserRole>, IUserRoleService<TUser>
+    public class UserRoleService<TDbContext, TUser, TRole>(TDbContext dbContext) : Repository<TDbContext, UserRole>(dbContext), IUserRoleService<TUser>
         where TUser : ApplicationUser
         where TDbContext : DbContext
         where TRole : ApplicationRole
     {
-        public UserRoleService(TDbContext dbContext) : base(dbContext)
-        {
-            _userRoles = dbContext.Set<UserRole>();
-            _users = dbContext.Set<TUser>();
-            _roles = dbContext.Set<TRole>();
-        }
-
         public AccessResult AddUserRole(TUser user, string role)
         {
             var currentRole = GetExistingRole(role);
@@ -213,10 +206,10 @@ namespace AdeAuth.Services.Authentication
         }
 
 
-        private readonly DbSet<TUser> _users;
+        private readonly DbSet<TUser> _users = dbContext.Set<TUser>();
 
-        private readonly DbSet<TRole> _roles;
+        private readonly DbSet<TRole> _roles = dbContext.Set<TRole>();
 
-        private readonly DbSet<UserRole> _userRoles;
+        private readonly DbSet<UserRole> _userRoles = dbContext.Set<UserRole>();
     }
 }

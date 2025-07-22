@@ -16,7 +16,7 @@ namespace AdeAuth.Services.Utility
         /// </summary>
         public AuthConfiguration(IServiceCollection services)
         {
-            dependencyTypes = new List<DependencyType>();
+            dependencyTypes = [];
         }
 
         /// <summary>

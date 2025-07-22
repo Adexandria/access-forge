@@ -6,13 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdeAuth.Services.Authentication
 {
-    internal class LoginActivityService<TDbContext> : Repository<TDbContext,LoginActivity>,ILoginActivityService
+    internal class LoginActivityService<TDbContext>(TDbContext dbContext) : Repository<TDbContext,LoginActivity>(dbContext),ILoginActivityService
         where TDbContext : DbContext
     {
-        public LoginActivityService(TDbContext dbContext): base(dbContext)
-        {
-            _activities = dbContext.Set<LoginActivity>();
-        }
 
         // add as no tracking for all services
         public AccessResult CreateLoginActivity(LoginActivity loginActivity)
@@ -130,6 +126,6 @@ namespace AdeAuth.Services.Authentication
         }
 
 
-        private readonly DbSet<LoginActivity> _activities;
+        private readonly DbSet<LoginActivity> _activities = dbContext.Set<LoginActivity>();
     }
 }

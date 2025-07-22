@@ -5,30 +5,16 @@ using Microsoft.AspNetCore.Http;
 
 namespace AdeAuth.Services
 {
-    public class SignInManager<TUser> 
+    public class SignInManager<TUser>(IPasswordManager passwordManager,
+        IUserService<TUser> userService,
+        ITokenProvider tokenProvider,
+        IMfaService mfaService,
+        TokenConfiguration tokenConfiguration,
+        AccessOption accessOption, IUserClaimService userClaimService,
+        ILoginActivityService loginActivityService, ILocatorService locatorService,
+        TwoAuthenticationConfiguration authenticationConfiguration)
         where TUser : ApplicationUser
     {
-        public SignInManager(IPasswordManager passwordManager,
-            IUserService<TUser> userService,
-            ITokenProvider tokenProvider,
-            IMfaService mfaService,
-            TokenConfiguration tokenConfiguration,
-            AccessOption accessOption,IUserClaimService userClaimService,
-            ILoginActivityService loginActivityService,ILocatorService locatorService,
-            TwoAuthenticationConfiguration authenticationConfiguration)
-        {
-            _passwordManager = passwordManager;
-            _userService = userService;
-            _tokenProvider = tokenProvider;
-            _mfaService = mfaService;
-            _twoAuthenticationConfiguration = authenticationConfiguration;
-            _tokenConfiguration = tokenConfiguration;
-            _accessOption = accessOption;
-            _userClaimService = userClaimService;
-            _loginActivityService = loginActivityService;
-            _locatorService = locatorService;
-        }
-
 
         #region Login
         public async Task<SignInResult<LoginToken>> SignInByEmailAsync(string email, string password)
@@ -497,19 +483,24 @@ namespace AdeAuth.Services
         }
 
 
-        private readonly IUserService<TUser> _userService;
+        private readonly IUserService<TUser> _userService = userService;
 
-        private readonly IPasswordManager _passwordManager;
+        private readonly IPasswordManager _passwordManager = passwordManager;
 
-        private readonly ITokenProvider _tokenProvider;
+        private readonly ITokenProvider _tokenProvider = tokenProvider;
 
-        private readonly IMfaService _mfaService;
+        private readonly IMfaService _mfaService = mfaService;
 
-        private readonly TokenConfiguration _tokenConfiguration;
-        private readonly AccessOption _accessOption;
-        private readonly IUserClaimService _userClaimService;
-        private readonly ILoginActivityService _loginActivityService;
-        private readonly ILocatorService _locatorService;
-        private readonly TwoAuthenticationConfiguration _twoAuthenticationConfiguration;
+        private readonly TokenConfiguration _tokenConfiguration = tokenConfiguration;
+
+        private readonly AccessOption _accessOption = accessOption;
+
+        private readonly IUserClaimService _userClaimService = userClaimService;
+
+        private readonly ILoginActivityService _loginActivityService = loginActivityService;
+
+        private readonly ILocatorService _locatorService = locatorService;
+
+        private readonly TwoAuthenticationConfiguration _twoAuthenticationConfiguration = authenticationConfiguration;
     }
 }

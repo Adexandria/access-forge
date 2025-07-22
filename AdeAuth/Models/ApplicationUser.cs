@@ -37,7 +37,7 @@
         /// <summary>
         /// Verifies email confirmation
         /// </summary>
-        public virtual bool EmailConfirmed { get; set; } = false;
+        public virtual bool EmailConfirmed { get; set; }
 
 
         /// <summary>
@@ -58,12 +58,12 @@
         /// <summary>
         /// Verifies phone number confirmation
         /// </summary>
-        public virtual bool PhoneNumberConfirmed { get; set; } = false;
+        public virtual bool PhoneNumberConfirmed { get; set; }
 
         /// <summary>
         /// Verifies if two factor authentication is enabled
         /// </summary>
-        public virtual bool TwoFactorAuthenticationEnabled { get; set; } = false;
+        public virtual bool TwoFactorAuthenticationEnabled { get; set; }
 
 
         /// <summary>
@@ -80,13 +80,13 @@
         /// <summary>
         /// Verifies if the user is locked out
         /// </summary>
-        public virtual bool LockoutEnabled { get; set; } = false;
+        public virtual bool LockoutEnabled { get; set; }
 
         /// <summary>
         /// Manages lock out for a user
         /// </summary>
 
-        public virtual DateTime? LockOutExpiration{ get; set; }
+        public virtual DateTime? LockOutExpiration{ get; set;}
 
 
     }
