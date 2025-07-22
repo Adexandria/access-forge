@@ -17,6 +17,9 @@ namespace AdeAuth.Models
             Id = Guid.NewGuid();
         }
 
+        /// <summary>
+        /// Manages login activity for a user
+        /// </summary>
 
         public LoginActivity(string device, Guid userId)
         {
@@ -26,11 +29,17 @@ namespace AdeAuth.Models
             UserId = userId;
         }
 
+        /// <summary>
+        /// Updates the recent login time to the current UTC time.
+        /// </summary>
         public LoginActivity UpdateLoginActivity()
         {
             RecentLoginTime = DateTime.UtcNow;
             return this;
         }
+        /// <summary>
+        /// Adds location details to the login activity.
+        /// </summary>
 
         public LoginActivity AddLocation(string ipAddress, string city, string country)
         {

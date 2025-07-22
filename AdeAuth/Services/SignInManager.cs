@@ -5,6 +5,25 @@ using Microsoft.AspNetCore.Http;
 
 namespace AdeAuth.Services
 {
+    /// <summary>
+    /// Manages user sign-in operations, including authentication and account status checks.
+    /// </summary>
+    /// <remarks>The <see cref="SignInManager{TUser}"/> class provides methods for signing in users using
+    /// various credentials, handling two-factor authentication, and managing account lockout states. It integrates with
+    /// services for password management, user retrieval, token generation, and multi-factor authentication.</remarks>
+    /// <typeparam name="TUser">The type of user object, which must inherit from <see cref="ApplicationUser"/>.</typeparam>
+    /// <param name="passwordManager">Manages password</param>
+    /// <param name="userService">Manages user service</param>
+    /// <param name="tokenProvider">Manages token provider</param>
+    /// <param name="mfaService">Manages MFA services</param>
+    /// <param name="tokenConfiguration">Manages authentication configuration</param>
+    /// <param name="accessOption">Provides options for validating access rules and requirements.</param>
+    /// <param name="userClaimService">Provides methods for managing user claims, including creation, update, deletion, and retrieval operations.
+    /// </param>
+    /// <param name="loginActivityService">Provides methods for managing login activities, including creation, update, deletion, and retrieval of login
+    /// activity records.</param>
+    /// <param name="locatorService">Provides methods to retrieve user location and device information.</param>
+    /// <param name="authenticationConfiguration">Represents the configuration settings for two-factor authentication.</param>
     public class SignInManager<TUser>(IPasswordManager passwordManager,
         IUserService<TUser> userService,
         ITokenProvider tokenProvider,
@@ -17,6 +36,17 @@ namespace AdeAuth.Services
     {
 
         #region Login
+
+        /// <summary>
+        /// Attempts to sign in a user using their email and password Asynchronously.
+        /// </summary>
+        /// <remarks>This method validates the provided email and password, checks the user's account
+        /// status, and generates a login token if successful. It handles various sign-in scenarios, including account
+        /// lockout and two-factor authentication requirements.</remarks>
+        /// <param name="email">The email address of the user attempting to sign in. Cannot be null or empty.</param>
+        /// <param name="password">The password associated with the user's email. Cannot be null or empty.</param>
+        /// <returns>A <see cref="SignInResult{LoginToken}"/> indicating the result of the sign-in attempt.  The result can
+        /// indicate success, failure, a locked-out account, or a requirement for two-factor authentication.</returns>
         public async Task<SignInResult<LoginToken>> SignInByEmailAsync(string email, string password)
         {
             new Validator(_accessOption)
@@ -67,6 +97,16 @@ namespace AdeAuth.Services
             return SignInResult<LoginToken>.Success(token).SetLoginActivity(loginActivity);
         }
 
+        /// <summary>
+        /// Attempts to sign in a user using their email and password Asynchronously.
+        /// </summary>
+        /// <remarks>This method validates the provided email and password, checks the user's account
+        /// status, and generates a login token if successful. It handles various sign-in scenarios, including account
+        /// lockout and two-factor authentication requirements.</remarks>
+        /// <param name="email">The email address of the user attempting to sign in. Cannot be null or empty.</param>
+        /// <param name="password">The password associated with the user's email. Cannot be null or empty.</param>
+        /// <returns>A <see cref="SignInResult{LoginToken}"/> indicating the result of the sign-in attempt.  The result can
+        /// indicate success, failure, a locked-out account, or a requirement for two-factor authentication.</returns>
         public SignInResult<LoginToken> SignInByEmail(string email, string password)
         {
             new Validator(_accessOption)
@@ -118,6 +158,17 @@ namespace AdeAuth.Services
             return SignInResult<LoginToken>.Success(token).SetLoginActivity(loginActivity);
         }
 
+        /// <summary>
+        /// Attempts to sign in a user using their username and password asynchronously.
+        /// </summary>
+        /// <remarks>This method validates the provided username and password, checks the user's account
+        /// status, and generates a login token if successful. It handles scenarios such as account lockout and
+        /// two-factor authentication requirements.</remarks>
+        /// <param name="username">The username of the user attempting to sign in. Cannot be null or empty.</param>
+        /// <param name="password">The password associated with the username. Cannot be null or empty.</param>
+        /// <returns>A <see cref="SignInResult{T}"/> containing a <see cref="LoginToken"/> if the sign-in is successful. Returns
+        /// a failed result if the username or password is incorrect, the account is locked out, or two-factor
+        /// authentication is required.</returns>
         public async Task<SignInResult<LoginToken>> SignInByUsernameAsync(string username, string password)
         {
             new Validator(_accessOption)
@@ -168,6 +219,17 @@ namespace AdeAuth.Services
             return SignInResult<LoginToken>.Success(token).SetLoginActivity(loginActivity);
         }
 
+        /// <summary>
+        /// Attempts to sign in a user using their username and password.
+        /// </summary>
+        /// <remarks>This method validates the provided username and password, checks the user's account
+        /// status, and generates a login token if successful. It handles scenarios such as account lockout and
+        /// two-factor authentication requirements.</remarks>
+        /// <param name="username">The username of the user attempting to sign in. Cannot be null or empty.</param>
+        /// <param name="password">The password associated with the username. Cannot be null or empty.</param>
+        /// <returns>A <see cref="SignInResult{T}"/> containing a <see cref="LoginToken"/> if the sign-in is successful. Returns
+        /// a failed result if the username or password is incorrect, the account is locked out, or two-factor
+        /// authentication is required.</returns>
         public SignInResult<LoginToken> SignInByUsername(string username, string password)
         {
             new Validator(_accessOption)
@@ -221,6 +283,11 @@ namespace AdeAuth.Services
 
         #region Authenticate using two factor authenticator/sms
 
+        /// <summary>
+        /// Authenticates a user using two-factor authentication with an authenticator code asynchronously.
+        /// </summary>
+        /// <param name="code">TOTP cod from google authenticator</param>
+        /// <returns>A <see cref="SignInResult"/> indicating the success or failure of the unlock operation.</returns>
         public SignInResult TwoFactorAuthenticatorSignInAsync(string code)
         {
             new Validator()
@@ -235,6 +302,17 @@ namespace AdeAuth.Services
         #endregion
 
         #region Unlock user
+
+
+       /// <summary>
+       /// Unlocks a user account by disabling the lockout feature for the specified user asynchronously.
+       /// </summary>
+       /// <remarks>This method attempts to unlock the user account by setting the <c>LockoutEnabled</c>
+       /// property to <see langword="false"/>. It first validates the user ID and then fetches the user details. If the
+       /// user is found and updated successfully, the method returns a successful sign-in result; otherwise, it returns
+       /// a failed result.</remarks>
+       /// <param name="userId">The unique identifier of the user to unlock. Must be a valid GUID.</param>
+       /// <returns>A <see cref="SignInResult"/> indicating the success or failure of the unlock operation.</returns>
         public async Task<SignInResult> UnlockUserAsync(Guid userId)
         {
             new Validator().IsValidGuid(userId, "Invalid user id")
@@ -261,6 +339,15 @@ namespace AdeAuth.Services
             return SignInResult.Failed();
         }
 
+        /// <summary>
+        /// Unlocks a user account by disabling the lockout feature for the specified user.
+        /// </summary>
+        /// <remarks>This method attempts to unlock the user account by setting the <c>LockoutEnabled</c>
+        /// property to <see langword="false"/>. It first validates the user ID and then fetches the user details. If the
+        /// user is found and updated successfully, the method returns a successful sign-in result; otherwise, it returns
+        /// a failed result.</remarks>
+        /// <param name="userId">The unique identifier of the user to unlock. Must be a valid GUID.</param>
+        /// <returns>A <see cref="SignInResult"/> indicating the success or failure of the unlock operation.</returns>
         public SignInResult UnlockUser(Guid userId)
         {
             new Validator().IsValidGuid(userId, "Invalid user id")
@@ -287,6 +374,15 @@ namespace AdeAuth.Services
             return SignInResult.Failed();
         }
 
+        /// <summary>
+        /// Unlocks a user account by disabling the lockout feature for the specified user.
+        /// </summary>
+        /// <remarks>This method attempts to unlock the user account by setting the <c>LockoutEnabled</c>
+        /// property to <see langword="false"/>. It first validates the user ID and then fetches the user details. If the
+        /// user is found and updated successfully, the method returns a successful sign-in result; otherwise, it returns
+        /// a failed result.</remarks>
+        /// <param name="user">The user to unlock</param>
+        /// <returns>A <see cref="SignInResult"/> indicating the success or failure of the unlock operation.</returns>
         public async Task<SignInResult> UnlockUserAsync(TUser user)
         {
             new Validator().IsValid(user, "Invalid user")
@@ -304,6 +400,13 @@ namespace AdeAuth.Services
             return SignInResult.Failed();
         }
 
+        /// <summary>
+        /// Unlocks the specified user by disabling their lockout status.
+        /// </summary>
+        /// <remarks>This method updates the user's lockout status to allow sign-in attempts.  Ensure that
+        /// the user object is valid before calling this method.</remarks>
+        /// <param name="user">The user to be unlocked. Must be a valid user object.</param>
+        /// <returns>A <see cref="SignInResult"/> indicating the success or failure of the unlock operation.</returns>
         public SignInResult UnlockUser(TUser user)
         {
             new Validator().IsValid(user, "Invalid user")
@@ -324,6 +427,14 @@ namespace AdeAuth.Services
         #endregion
 
         #region Check if two factor is enabled
+
+        /// <summary>
+        /// Determines whether two-factor authentication is enabled for the specified user.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to check for two-factor authentication status.</param>
+        /// <returns>A <see cref="SignInResult"/> indicating whether two-factor authentication is required.  Returns <see
+        /// cref="SignInResult.Failed"/> if the user retrieval is unsuccessful; otherwise, returns <see
+        /// cref="SignInResult.RequireTwoFactor"/>.</returns>
         public async Task<SignInResult>  IsTwoFactorEnabledAsync(Guid userId)
         {
             new Validator().IsValidGuid(userId, "Invalid user id")
@@ -338,6 +449,13 @@ namespace AdeAuth.Services
             return SignInResult.RequireTwoFactor();
         }
 
+        /// <summary>
+        /// Determines whether two-factor authentication is required for the specified user.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to check for two-factor authentication requirement.</param>
+        /// <returns>A <see cref="SignInResult"/> indicating whether two-factor authentication is required.  Returns <see
+        /// cref="SignInResult.Failed"/> if the user retrieval is unsuccessful; otherwise, returns <see
+        /// cref="SignInResult.RequireTwoFactor"/>.</returns>
         public SignInResult IsTwoFactorEnabled(Guid userId)
         {
             new Validator().IsValidGuid(userId, "Invalid user id")
@@ -357,6 +475,13 @@ namespace AdeAuth.Services
 
         #region Check if account is locked out
 
+        /// <summary>
+        /// Determines whether the user account associated with the specified user ID is locked out.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to check for lockout status.</param>
+        /// <returns>A <see cref="SignInResult"/> indicating the lockout status of the user.  Returns <see
+        /// cref="SignInResult.LockedOut"/> if the account is locked out;  otherwise, returns <see
+        /// cref="SignInResult.Failed"/> if the user retrieval is unsuccessful.</returns>
         public async Task<SignInResult> IsLockedOutAsync(Guid userId)
         {
             new Validator().IsValidGuid(userId, "Invalid user id")
@@ -372,6 +497,13 @@ namespace AdeAuth.Services
             return SignInResult.LockedOut();
         }
 
+        /// <summary>
+        /// Determines whether the specified user is currently locked out.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to check for lockout status. Must be a valid GUID.</param>
+        /// <returns>A <see cref="SignInResult"/> indicating the lockout status of the user. Returns <see
+        /// cref="SignInResult.Failed"/> if the user cannot be fetched; otherwise, returns <see
+        /// cref="SignInResult.LockedOut"/>.</returns>
         public SignInResult IsLockedOut(Guid userId)
         {
             new Validator().IsValidGuid(userId, "Invalid user id")
@@ -388,8 +520,16 @@ namespace AdeAuth.Services
         }
         #endregion
 
-        // store update external authetication
+      
         #region Generate otp using google authenticator
+
+        /// <summary>
+        /// Generates a one-time password (OTP) using Google Authenticator.
+        /// </summary>
+        /// <remarks>This method utilizes the Google Authenticator algorithm to generate a time-based OTP.
+        /// The OTP is valid for the specified duration in minutes.</remarks>
+        /// <param name="expirationTimeInMinutes">The time in minutes after which the generated OTP will expire. Must be a positive integer.</param>
+        /// <returns>A <see cref="SignInResult{T}"/> containing the generated OTP as a string if successful.</returns>
         public SignInResult<string> GenerateOtpUsingGoogleAuthenticator(int expirationTimeInMinutes)
         {
             new Validator()
@@ -403,6 +543,13 @@ namespace AdeAuth.Services
             return SignInResult<string>.Success(otp);
         }
 
+        /// <summary>
+        /// Verifies a one-time password (OTP) using Google Authenticator.
+        /// </summary>
+        /// <param name="otp">The OTP to be verified. Must be a valid non-null string.</param>
+        /// <returns>An <see cref="AccessResult"/> indicating the result of the verification. Returns <see
+        /// cref="AccessResult.Success"/> if the OTP is verified successfully; otherwise, returns <see
+        /// cref="AccessResult.Failed"/> with an appropriate error message.</returns>
         public AccessResult VerifyOtpUsingGoogleAuthenticator(string otp)
         {
             new Validator()
@@ -420,8 +567,17 @@ namespace AdeAuth.Services
 
         #endregion
 
-        // sign out to delete all activities including refresh token and login activities
+      
 
+        /// <summary>
+        /// Updates the login activity for a specified user with device and location information.
+        /// </summary>
+        /// <remarks>This method fetches the user's device configuration and IP address to determine the
+        /// login activity.  If the login activity does not exist, it creates a new one with the user's location
+        /// details.</remarks>
+        /// <param name="userId">The unique identifier of the user whose login activity is to be updated.</param>
+        /// <returns>A <see cref="LoginActivity"/> object representing the updated login activity.  Returns <see
+        /// langword="default"/> if the update operation is unsuccessful.</returns>
         private async Task<LoginActivity> UpdateLoginActivityWithDeviceLocatorAsync(Guid userId)
         {
             // handle exceptions because a device might not exist and you are making it configurable
@@ -450,6 +606,15 @@ namespace AdeAuth.Services
         }
 
 
+        /// <summary>
+        /// Updates the login activity for a specified user by utilizing device locator services.
+        /// </summary>
+        /// <remarks>This method fetches the user's device configuration and IP address to determine the
+        /// login activity. If no existing login activity is found, it creates a new one with the user's location
+        /// details.</remarks>
+        /// <param name="userId">The unique identifier of the user whose login activity is being updated.</param>
+        /// <returns>A <see cref="LoginActivity"/> object representing the updated login activity if the operation is successful;
+        /// otherwise, <see langword="default"/>.</returns>
         private LoginActivity UpdateLoginActivityWithDeviceLocator(Guid userId)
         {
             var deviceConfiguration = _locatorService.FetchUserDevice();

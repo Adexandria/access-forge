@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace AdeAuth.Services.Authentication
 {
+    /// <summary>
+    /// Manages Location and Device information of the user
+    /// </summary>
     internal class LocatorService : ILocatorService
     {
         // a constructor
@@ -25,6 +28,10 @@ namespace AdeAuth.Services.Authentication
             _apiKey = infoConfiguration?.APIKey;
         }
 
+        /// <summary>
+        /// Fetches the device information of the user
+        /// </summary>
+        /// <returns>Details of user device </returns>
         public DeviceConfiguration FetchUserDevice()
         {
             var userAgent = _context?.Request?.Headers["User-Agent"];
@@ -66,6 +73,11 @@ namespace AdeAuth.Services.Authentication
             return default;
         }
 
+        /// <summary>
+        /// Fetches the user location based on the IP address
+        /// </summary>
+        /// <param name="ipAddress">Ip address</param>
+        /// <returns>Location of the user</returns>
         public Location FetchUserLocation(string ipAddress)
         {
             if (string.IsNullOrEmpty(ipAddress))
@@ -88,6 +100,10 @@ namespace AdeAuth.Services.Authentication
             };
         }
 
+        /// <summary>
+        /// Retrieves the IP address of the user from the request headers
+        /// </summary>
+        /// <returns>The IP address</returns>
         public string FetchIpAddress()
         {
             string _ipAddress = _context?.Request?.Headers["X-Forwarded-For"];
@@ -98,6 +114,11 @@ namespace AdeAuth.Services.Authentication
             return _ipAddress.Split(',')[0];
         }
 
+        /// <summary>
+        /// Creates he IPinfo client using the provided API key
+        /// </summary>
+        /// <param name="apiKey">API key to set up the client</param>
+        /// <returns>IPinfoClient</returns>
         private IPinfoClient CreateClient(string apiKey)
         {
             if (string.IsNullOrEmpty(apiKey))

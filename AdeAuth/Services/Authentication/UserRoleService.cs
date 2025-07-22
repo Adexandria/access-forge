@@ -6,11 +6,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdeAuth.Services.Authentication
 {
+    /// <summary>
+    /// Provides services for managing user roles within a specified database context.
+    /// </summary>
+    /// <remarks>This service allows adding and removing roles for users, both synchronously and
+    /// asynchronously. It ensures that roles are valid and users exist before performing operations.</remarks>
+    /// <typeparam name="TDbContext">The type of the database context used for data operations.</typeparam>
+    /// <typeparam name="TUser">The type representing a user in the application.</typeparam>
+    /// <typeparam name="TRole">The type representing a role in the application.</typeparam>
+    /// <param name="dbContext">Manages DbContext</param>
     public class UserRoleService<TDbContext, TUser, TRole>(TDbContext dbContext) : Repository<TDbContext, UserRole>(dbContext), IUserRoleService<TUser>
         where TUser : ApplicationUser
         where TDbContext : DbContext
         where TRole : ApplicationRole
     {
+        /// <summary>
+        /// Adds a specified role to a user.
+        /// </summary>
+        /// <remarks>This method checks if the specified role exists and if the user is already present in
+        /// the system before attempting to add the role. It also ensures that changes are saved successfully.</remarks>
+        /// <param name="user">The user to whom the role will be added. Cannot be null.</param>
+        /// <param name="role">The name of the role to add. Must be a valid, existing role.</param>
+        /// <returns>An <see cref="AccessResult"/> indicating the success or failure of the operation. Returns <see
+        /// cref="AccessResult.Success"/> if the role is successfully added. Returns <see cref="AccessResult.Failed"/>
+        /// with an appropriate error message if the role is invalid, the user does not exist, or if saving changes
+        /// fails.</returns>
         public AccessResult AddUserRole(TUser user, string role)
         {
             var currentRole = GetExistingRole(role);
@@ -38,6 +58,15 @@ namespace AdeAuth.Services.Authentication
             return AccessResult.Success();
         }
 
+        /// <summary>
+        /// Add role to user.
+        /// </summary>
+        /// <param name="email">Email of the user</param>
+        /// <param name="role">The role to assigned to the user</param>
+        /// <returns>An <see cref="AccessResult"/> indicating the success or failure of the operation. Returns <see
+        /// cref="AccessResult.Success"/> if the role is successfully added to the user. Returns <see cref="AccessResult.Failed"/>
+        /// with an appropriate error message if the role is invalid, the user does not exist, or if saving changes
+        /// fails</returns>
         public AccessResult AddUserRole(string email, string role)
         {
             var currentRole = GetExistingRole(role);
@@ -65,6 +94,15 @@ namespace AdeAuth.Services.Authentication
             return AccessResult.Success();
         }
 
+        /// <summary>
+        /// Add role to user asynchronously. 
+        /// </summary>
+        /// <param name="email">Email of the user</param>
+        /// <param name="role">The role to assigned to the user</param>
+        /// <returns>An <see cref="AccessResult"/> indicating the success or failure of the operation. Returns <see
+        /// cref="AccessResult.Success"/> if the role is successfully added to the user. Returns <see cref="AccessResult.Failed"/>
+        /// with an appropriate error message if the role is invalid, the user does not exist, or if saving changes
+        /// fails</returns>
         public async Task<AccessResult> AddUserRoleAsync(TUser user, string role)
         {
             var currentRole = await GetExistingRoleAsync(role);
@@ -94,6 +132,16 @@ namespace AdeAuth.Services.Authentication
             return AccessResult.Success();
         }
 
+        /// <summary>
+        /// Asynchronously adds a specified role to a user identified by their email address.
+        /// </summary>
+        /// <remarks>This method checks if the specified role exists and if the user with the given email
+        /// exists.  If either does not exist, the operation fails with a corresponding error message.</remarks>
+        /// <param name="email">The email address of the user to whom the role will be added. Cannot be null or empty.</param>
+        /// <param name="role">The name of the role to be added to the user. Cannot be null or empty.</param>
+        /// <returns>An <see cref="AccessResult"/> indicating the success or failure of the operation.  Returns <see
+        /// cref="AccessResult.Success"/> if the role is successfully added;  otherwise, returns <see
+        /// cref="AccessResult.Failed"/> with an appropriate error message.</returns>
         public async Task<AccessResult> AddUserRoleAsync(string email, string role)
         {
             var currentRole = await GetExistingRoleAsync(role);
@@ -123,6 +171,14 @@ namespace AdeAuth.Services.Authentication
             return AccessResult.Success();
         }
 
+        /// <summary>
+        /// Removes a specified role from a user.
+        /// </summary>
+        /// <param name="user">The user from whom the role will be removed. Cannot be null.</param>
+        /// <param name="role">The role to remove</param>
+        /// <returns>An <see cref="AccessResult"/> indicating the success or failure of the operation.  Returns <see
+        /// cref="AccessResult.Success"/> if the role is successfully removed;  otherwise, returns <see
+        /// cref="AccessResult.Failed"/> with an appropriate error message.</returns>
         public AccessResult RemoveUserRole(TUser user, string role)
         {
             var currentRole = GetExistingRole(role);
@@ -153,6 +209,16 @@ namespace AdeAuth.Services.Authentication
             return AccessResult.Success();
         }
 
+
+        /// <summary>
+        /// Asynchronously removes a specified role from a user.
+        /// </summary>
+        /// <param name="user">The user from whom the role will be removed. Cannot be null.</param>
+        /// <param name="role">The name of the role to be removed. Cannot be null or empty.</param>
+        /// <returns>An <see cref="AccessResult"/> indicating the success or failure of the operation. Returns <see
+        /// cref="AccessResult.Success"/> if the role is successfully removed. Returns <see cref="AccessResult.Failed"/>
+        /// with an appropriate error message if the role does not exist, the user is not found, the role is not
+        /// associated with the user, or if the operation fails to persist changes.</returns>
         public async Task<AccessResult> RemoveUserRoleAsync(TUser user, string role)
         {
             var currentRole = await GetExistingRoleAsync(role);

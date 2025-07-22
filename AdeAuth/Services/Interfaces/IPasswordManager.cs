@@ -1,7 +1,7 @@
 ﻿namespace AdeAuth.Services.Interfaces
 {
     /// <summary>
-    /// Manages password manager
+    /// Manages password
     /// </summary>
     public interface IPasswordManager
     {
