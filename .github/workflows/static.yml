@@ -39,7 +39,7 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - name: Create directory
-        run: mkdir -p documentation/html
+        run: mkdir -p Documentation/html
       - name: Deploy to git pages
         id: deployment
         uses: DenverCoder1/doxygen-github-pages-action@v2.0.0
