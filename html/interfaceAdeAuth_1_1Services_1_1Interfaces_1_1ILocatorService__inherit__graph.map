@@ -1,5 +1,4 @@
 <map id="AdeAuth.Services.Interfaces.ILocatorService" name="AdeAuth.Services.Interfaces.ILocatorService">
-<area shape="rect" id="Node000001" title="Provides methods to retrieve user location and device information." alt="" coords="20,5,229,45"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,244,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,59,127,93,122,93,122,59"/>
+<area shape="rect" id="node1" title="Provides methods to retrieve user location and device information." alt="" coords="20,5,229,45"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,93,244,133"/>
 </map>
