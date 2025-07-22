@@ -15,13 +15,7 @@ permissions:
     pull-requests: write
     deployments: write
     contents: write
-    checks: read
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+    checks: read 
 
 jobs:
   # Single deploy job since we're just deploying
@@ -31,20 +25,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
       - name: Checkout
         uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Create directory
-        run: |
-          mkdir -p documentation/html
-          touch documentation/html/.nojekyll
       - name: Deploy to git pages
         id: deployment
-        uses: DenverCoder1/doxygen-github-pages-action@v1.3.0
+        uses: DenverCoder1/doxygen-github-pages-action@v2.0.0
         with:
           folder: Documentation/html
           config_file: Documentation/Doxyfile.config
