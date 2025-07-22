@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace AdeAuth.Models
 {
-    public class LoginToken : Token
+    /// <summary>
+    /// Manages login tokens such as refresh token and access token
+    /// </summary>
+    public class LoginToken(string refreshToken, string accessToken, DateTime dateTime) : Token(accessToken,dateTime)
     {
-        public LoginToken(string refreshToken, string accessToken, DateTime dateTime) : base(accessToken,dateTime)
-        {
-            RefreshToken = refreshToken;
-        }
-        public string RefreshToken { get; set; }
+        /// <summary>
+        /// Manages the refresh token
+        /// </summary>
+        public string RefreshToken { get; set; } = refreshToken;
     }
 }

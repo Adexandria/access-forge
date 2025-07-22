@@ -6,15 +6,19 @@ using System.Threading.Tasks;
 
 namespace AdeAuth.Models
 {
-    public class Token
+    /// <summary>
+    /// Manages tokens such as access token and expiration time
+    /// </summary>
+    public class Token(string accessToken, DateTime dateTime)
     {
-        public Token(string accessToken, DateTime dateTime)
-        {
-            AccessToken = accessToken;
-            ExpirationTime = dateTime;
-        }
-        public string AccessToken { get; set; }
+        /// <summary>
+        /// Manages the access token
+        /// </summary>
+        public string AccessToken { get; set; } = accessToken;
 
-        public DateTime ExpirationTime { get; set; }
+        /// <summary>
+        /// Gets or sets the expiration time for the current item.
+        /// </summary>
+        public DateTime ExpirationTime { get; set; } = dateTime;
     }
 }

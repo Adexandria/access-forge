@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AdeAuth.Services.Authentication
 {
+
     internal class LocatorService : ILocatorService
     {
         // a constructor

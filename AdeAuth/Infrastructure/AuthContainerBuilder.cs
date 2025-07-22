@@ -98,6 +98,11 @@ namespace AdeAuth.Infrastructure
             return serviceCollection;
         }
 
+        /// <summary>
+        /// Registers identity rule for password policy
+        /// </summary>
+        /// <param name="action">Action to configure the access rule</param>
+        /// <param name="serviceCollection">Manages dependencies of services</param>
         public static IServiceCollection AddIdentityRule(this IServiceCollection serviceCollection,Action<AccessRule> action)
         {
             var rule = new AccessRule();
@@ -192,6 +197,11 @@ namespace AdeAuth.Infrastructure
             return authenticationBuilder.Services;
         }
 
+        /// <summary>
+        /// Registers ipinfo configuration to fetch ip information
+        /// </summary>
+        /// <param name="servicesCollection">Manages dependencies of services</param>
+        /// <param name="apiKey">Api key to access ipinfo</param
         public static IServiceCollection AddIPInfoConfiguration(this IServiceCollection servicesCollection,string apiKey)
         {
             var ipConfiguration = new IpInfoConfiguration(apiKey);
