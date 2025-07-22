@@ -1,0 +1,7 @@
+<map id="AdeAuth.Db.IdentityContext&lt; TUser, TRole &gt;" name="AdeAuth.Db.IdentityContext&lt; TUser, TRole &gt;">
+<area shape="rect" id="Node000001" title="Handles the db context for identity service." alt="" coords="5,79,209,119"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="62,5,153,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,44,94,78,89,79,88,44"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="110,44,110,79,105,79,105,44"/>
+<area shape="poly" id="edge3_Node000001_Node000002" title=" " alt="" coords="127,44,126,79,120,78,121,44"/>
+</map>
