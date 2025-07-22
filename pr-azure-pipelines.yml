@@ -17,9 +17,9 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 - script: dotnet test *.Tests/*.Tests.csproj --collect:"XPlat Code Coverage"
   displayName: 'Run test'
-- task: reportgenerator@5
+  
+- task: PublishCodeCoverageResults@2
   inputs:
-    reports: '*.Tests/TestResults/**/coverage.cobertura.xml'
-    targetdir: 'coveragereport'
+    summaryFileLocation: '*.Tests/TestResults/**/coverage.cobertura.xml'
 
 
