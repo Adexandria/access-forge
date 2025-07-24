@@ -1,0 +1,11 @@
+var searchData=
+[
+  ['accesserror_0',['AccessError',['../namespaceAdeAuth_1_1Services_1_1Utility.html#a00f7b5e87704f4c5b640c6becfeae036',1,'AdeAuth::Services::Utility']]],
+  ['accessoption_1',['AccessOption',['../namespaceAdeAuth_1_1Services_1_1Utility.html#a90b5acef3ebcb4811528a191b213e20d',1,'AdeAuth::Services::Utility']]],
+  ['addlocation_2',['AddLocation',['../classAdeAuth_1_1Models_1_1LoginActivity.html#a6bf3bdc04561b7a2c757866457f45cfc',1,'AdeAuth::Models::LoginActivity']]],
+  ['addphonenumber_3',['AddPhoneNumber',['../classAdeAuth_1_1Services_1_1UserManager.html#afc6cda3d96d5a48306887ffe44d36a81',1,'AdeAuth.Services.UserManager.AddPhoneNumber(TUser user, string phoneNumber)'],['../classAdeAuth_1_1Services_1_1UserManager.html#a3e178e0935cca9e63d2bf6453a7e6fa8',1,'AdeAuth.Services.UserManager.AddPhoneNumber(Guid userId, string phoneNumber)']]],
+  ['addphonenumberasync_4',['AddPhoneNumberAsync',['../classAdeAuth_1_1Services_1_1UserManager.html#a97d8ef2deb76c86287a4dd0f0d64d157',1,'AdeAuth.Services.UserManager.AddPhoneNumberAsync(TUser user, string phoneNumber)'],['../classAdeAuth_1_1Services_1_1UserManager.html#aebc8de2c3ae9576847fa2abd22942c28',1,'AdeAuth.Services.UserManager.AddPhoneNumberAsync(Guid userId, string phoneNumber)']]],
+  ['adduserrole_5',['AddUserRole',['../interfaceAdeAuth_1_1Services_1_1Interfaces_1_1IUserRoleService.html#adc3a29dc560a1b61495d2b63abb4202f',1,'AdeAuth.Services.Interfaces.IUserRoleService.AddUserRole(TUser user, string role)'],['../interfaceAdeAuth_1_1Services_1_1Interfaces_1_1IUserRoleService.html#a848b3248930424a4a74c6e591e7b1b8f',1,'AdeAuth.Services.Interfaces.IUserRoleService.AddUserRole(string email, string role)']]],
+  ['adduserroleasync_6',['AddUserRoleAsync',['../interfaceAdeAuth_1_1Services_1_1Interfaces_1_1IUserRoleService.html#aca9ceb1dad79deba43bdd197d87e8e7b',1,'AdeAuth.Services.Interfaces.IUserRoleService.AddUserRoleAsync(TUser user, string role)'],['../interfaceAdeAuth_1_1Services_1_1Interfaces_1_1IUserRoleService.html#a3105bdc20b60be2d6a555a4184839157',1,'AdeAuth.Services.Interfaces.IUserRoleService.AddUserRoleAsync(string email, string role)']]],
+  ['authconfiguration_7',['AuthConfiguration',['../classAdeAuth_1_1Services_1_1Utility_1_1AuthConfiguration.html#a3c9e09da5e6f0f52d17375e0cfabc306',1,'AdeAuth::Services::Utility::AuthConfiguration']]]
+];
