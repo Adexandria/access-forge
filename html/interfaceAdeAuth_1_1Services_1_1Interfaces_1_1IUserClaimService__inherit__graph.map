@@ -1,0 +1,4 @@
+<map id="AdeAuth.Services.Interfaces.IUserClaimService" name="AdeAuth.Services.Interfaces.IUserClaimService">
+<area shape="rect" id="node1" title="Provides methods for managing user claims, including creation, update, deletion, and retrieval operat..." alt="" coords="23,5,233,45"/>
+<area shape="rect" id="node2" href="$classAdeAuth_1_1Services_1_1Authentication_1_1UserClaimService.html" title="Manages the user claim" alt="" coords="5,93,251,133"/>
+</map>
