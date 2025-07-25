@@ -22,4 +22,6 @@ steps:
   inputs:
     summaryFileLocation: '*.Tests/TestResults/**/coverage.cobertura.xml'
 
-
+- task: WhiteSource@21
+  inputs:
+    cwd: '$(System.DefaultWorkingDirectory)'
