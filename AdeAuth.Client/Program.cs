@@ -35,7 +35,7 @@ namespace AdeAuth.Client
                 s.AuthenticationScheme = JwtBearerDefaults.AuthenticationScheme;
                 s.ExpirationTime = 30;
             })
-            .AddIPInfoConfiguration("a9e6713beb5988")
+            .AddIPInfoConfiguration("")
             .AddIdentityRule(s =>
             {
                 s.IsRequireEmailConfirmation = true;
